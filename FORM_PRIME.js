@@ -43,6 +43,9 @@ document.addEventListener("DOMContentLoaded", function () {
     // Prevent the default form submission behavior
     event.preventDefault();
 
+    // Show the loading spinner
+    document.getElementById("loading-spinner").style.display = "block";
+
     // Remove 'required' attributes from hidden inputs before submission
     removeRequiredFromHiddenInputs();
 
@@ -78,6 +81,9 @@ document.addEventListener("DOMContentLoaded", function () {
       form.innerHTML =
         '<div class="submission-message">Wystąpił problem z przesłaniem formularza. Prosimy spróbować ponownie później lub zgłosić błąd przesyłając wiadomość na czacie w prawym dolnym rogu.</div>';
       console.error("Form submission error:", error);
+    } finally {
+      // Hide the loading spinner after form submission completes
+      document.getElementById("loading-spinner").style.display = "none";
     }
   });
 });
@@ -516,7 +522,7 @@ function updateDescriptionPK(selectedValue) {
         <li>dostęp do webinarów.</li>
       </ul>
       <p><strong>Pakiet miesięczny</strong></p>
-      <p><strong>${packagePrice}</strong></p>
+      <p style="margin-bottom: 20px;"><strong>${packagePrice}</strong></p>
     `;
   }
 
@@ -620,7 +626,7 @@ function updateDescriptionKPIR(selectedValue) {
         <li>dostęp do webinarów.</li>
       </ul>
       <p><strong>Pakiet miesięczny</strong></p>
-      <p><strong>${packagePrice}</strong></p>
+      <p style="margin-bottom: 20px;"><strong>${packagePrice}</strong></p>
     `;
   }
 
@@ -880,7 +886,7 @@ const packages = [
 
 // Function to display purchase buttons after form submission
 function displayPurchaseButtons() {
-  const formContainer = document.querySelector(".container");
+  const formContainer = document.querySelector(".Mentzen-prime-survey-wrapper");
   const buttonsContainer = document.createElement("div");
   buttonsContainer.classList.add("buttons-container");
 
@@ -889,7 +895,7 @@ function displayPurchaseButtons() {
   // Add button for the accounting package if selected
   if (userSelections.accountingPackage) {
     buttonsHTML += `
-      <a href="https://subskrypcje.mentzen.pl/subscription/${userSelections.accountingPackage.subscriptionId}" target="_blank" class="button">
+      <a href="https://subskrypcje.mentzen.pl/subscription/${userSelections.accountingPackage.subscriptionId}" target="_blank" class="Package-button">
         ${userSelections.accountingPackage.name}
       </a>
     `;
@@ -898,7 +904,7 @@ function displayPurchaseButtons() {
   // Add button for the HR package if selected
   if (userSelections.hrPackage) {
     buttonsHTML += `
-      <a href="https://subskrypcje.mentzen.pl/subscription/${userSelections.hrPackage.subscriptionId}" target="_blank" class="button">
+      <a href="https://subskrypcje.mentzen.pl/subscription/${userSelections.hrPackage.subscriptionId}" target="_blank" class="Package-button">
         ${userSelections.hrPackage.name} (${userSelections.hrPackage.packageType})
       </a>
     `;

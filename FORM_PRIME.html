@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="FORM_PRIME.css">
 </head>
 <body>
-    <div class="container">
+    <div class="Mentzen-prime-survey-wrapper">
         <form id="surveyForm">
             <!-- Card 1: Intro Text -->
             <div class="card card-active" id="card-1">
@@ -92,7 +92,7 @@
             <!-- Card 6: Adres e-mail -->
             <div class="card" id="card-6">
                 <label for="email">Adres e-mail</label>
-                <input type="email" id="email" name="Adres e-mail" required>
+                <input type="text" id="email" name="Adres e-mail" required>
                 <!-- Navigation Buttons -->
                 <div class="button-group">
                     <button type="button" onclick="nextPrev(-1)">Wstecz</button>
@@ -223,6 +223,12 @@
                 </select>
                 <!-- Description Div -->
                 <div id="description_PK" class="package-description"></div>
+                <!-- Information -->
+                <div class="Information-NumberOfDocuments">
+                    <p>Faktury wystawione na osoby fizyczne, które nie posiadają NIPu, traktujemy jako jeden zbiorczy dokument.</p>
+                    <p>Faktury sprzedażowe i kosztowe z NIP liczymy pojedynczo, każda faktura jest odrębnym dokumentem.</p>
+                    <p>Dodatkowo, osobno liczone są: miesięczne raporty z kasy fiskalnej, wyciągi bankowe oraz dokumenty wewnętrzne.</p>
+                </div>
                 <!-- Navigation Buttons -->
                 <div class="button-group">
                     <button type="button" onclick="nextPrev(-1)">Wstecz</button>
@@ -251,6 +257,12 @@
                 </select>
                 <!-- Description Div -->
                 <div id="description_KPIR" class="package-description"></div>
+                <!-- Information -->
+                <div class="Information-NumberOfDocuments">
+                    <p>Faktury wystawione na osoby fizyczne, które nie posiadają NIPu, traktujemy jako jeden zbiorczy dokument.</p>
+                    <p>Faktury sprzedażowe i kosztowe z NIP liczymy pojedynczo, każda faktura jest odrębnym dokumentem.</p>
+                    <p>Dodatkowo, osobno liczone są: miesięczne raporty z kasy fiskalnej, wyciągi bankowe oraz dokumenty wewnętrzne.</p>
+                </div>
                 <!-- Navigation Buttons -->
                 <div class="button-group">
                     <button type="button" onclick="nextPrev(-1)">Wstecz</button>
@@ -262,6 +274,10 @@
             <div class="card" id="card-16">
                 <label for="additionalInfo">Informacje dodatkowe</label>
                 <textarea id="additionalInfo" name="Informacje dodatkowe"></textarea>
+                <!-- Loading Spinner -->
+                <div id="loading-spinner" style="display: none;">
+                    <div class="spinner"></div>
+                </div>
                 <!-- Navigation Buttons -->
                 <div class="button-group">
                     <button type="button" onclick="nextPrev(-1)">Wstecz</button>
@@ -269,7 +285,7 @@
                 </div>
             </div>
     
-        </form>
+        </form>          
     </div>    
       
     <script src="FORM_PRIME.js"></script>
