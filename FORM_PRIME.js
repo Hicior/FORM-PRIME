@@ -43,8 +43,13 @@ document.addEventListener("DOMContentLoaded", function () {
     // Prevent the default form submission behavior
     event.preventDefault();
 
-    // Show the loading spinner
-    document.getElementById("loading-spinner").style.display = "block";
+    // Store a reference to the loading spinner
+    const spinner = document.getElementById("loading-spinner");
+
+    // Show the loading spinner if it exists
+    if (spinner) {
+      spinner.style.display = "block";
+    }
 
     // Remove 'required' attributes from hidden inputs before submission
     removeRequiredFromHiddenInputs();
@@ -83,7 +88,9 @@ document.addEventListener("DOMContentLoaded", function () {
       console.error("Form submission error:", error);
     } finally {
       // Hide the loading spinner after form submission completes
-      document.getElementById("loading-spinner").style.display = "none";
+      if (spinner) {
+        spinner.style.display = "none";
+      }
     }
   });
 });

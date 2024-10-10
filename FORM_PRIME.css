@@ -222,6 +222,7 @@ body {
 .Mentzen-prime-survey-wrapper .package-description ul {
     list-style-type: disc;
     padding-left: 20px;
+    padding-bottom: 0;
     margin-bottom: 20px;
 }
 
@@ -353,10 +354,6 @@ body {
       transform: rotate(360deg);
     }
 }  
-
-#card-16 {
-position: relative;
-}
 
 #loading-spinner {
     position: absolute;
