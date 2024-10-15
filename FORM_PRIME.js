@@ -13,6 +13,7 @@ const userSelections = {
   accountingPackage: null, // Selected accounting package
   hrPackage: null, // Selected HR package
   accountingTypeSelection: null, // Selected accounting type
+  selectedInnaOption: false, // Indicates if "Inna" was selected
 };
 
 // Arrays to store available package types and packages by type
@@ -62,7 +63,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     try {
       // Send form data to the server using Fetch API
-      const response = await fetch("https://formspree.io/f/mqazvjvp", {
+      const response = await fetch("https://formspree.io/f/xeoqqlgq", {
         method: "POST",
         body: formData,
         headers: {
@@ -77,7 +78,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const data = await response.json();
 
-      // Display a success message and show purchase buttons
+      // Display a success message and show purchase buttons or contact message
       form.innerHTML =
         '<div class="submission-message">Dziękujemy! Twoja odpowiedź została przesłana.</div>';
       displayPurchaseButtons();
@@ -171,12 +172,29 @@ function initializeAccountingTypeCard() {
 // Function to initialize the documents selection for full accounting (PK)
 function initializeDocumentsPKCard() {
   const documentsPKSelect = document.getElementById("documents_PK");
+  const documentsPKOtherInput = document.getElementById("documents_PK_other");
 
   if (documentsPKSelect) {
     // Attach change event listener to update description and user selections
     documentsPKSelect.addEventListener("change", function () {
+      if (this.value === "Inna") {
+        // Show the input field
+        documentsPKOtherInput.style.display = "block";
+        documentsPKOtherInput.setAttribute("required", "required");
+        userSelections.accountingPackage = null;
+        userSelections.selectedInnaOption = true;
+      } else {
+        // Hide the input field
+        documentsPKOtherInput.style.display = "none";
+        documentsPKOtherInput.removeAttribute("required");
+        userSelections.accountingPackage = getAccountingPackage(
+          "pk",
+          this.value
+        );
+        userSelections.selectedInnaOption = false;
+      }
+
       updateDescriptionPK(this.value);
-      userSelections.accountingPackage = getAccountingPackage("pk", this.value);
     });
     pkListenerAttached = true; // Set flag to true to avoid re-attaching
   }
@@ -187,12 +205,31 @@ function initializeDocumentsKPIRCard() {
   const documentsKPIRSelect = document.getElementById(
     "documents_KPIR_RyczaltzVAT"
   );
+  const documentsKPIROtherInput = document.getElementById(
+    "documents_KPIR_other"
+  );
 
   if (documentsKPIRSelect) {
     // Attach change event listener to update description and user selections
     documentsKPIRSelect.addEventListener("change", function () {
+      if (this.value === "Inna") {
+        // Show the input field
+        documentsKPIROtherInput.style.display = "block";
+        documentsKPIROtherInput.setAttribute("required", "required");
+        userSelections.accountingPackage = null;
+        userSelections.selectedInnaOption = true;
+      } else {
+        // Hide the input field
+        documentsKPIROtherInput.style.display = "none";
+        documentsKPIROtherInput.removeAttribute("required");
+        userSelections.accountingPackage = getAccountingPackage(
+          "kp",
+          this.value
+        );
+        userSelections.selectedInnaOption = false;
+      }
+
       updateDescriptionKPIR(this.value);
-      userSelections.accountingPackage = getAccountingPackage("kp", this.value);
     });
     kpListenerAttached = true; // Set flag to true to avoid re-attaching
   }
@@ -221,6 +258,7 @@ function updateMentzenBezVatDescription() {
       name: "Mentzen bez VAT",
       subscriptionId: 108,
     };
+    userSelections.selectedInnaOption = false;
   } else {
     // Otherwise, clear the description and reset the accounting package
     if (descriptionDiv) {
@@ -247,8 +285,10 @@ function displayMentzenBezVatDescription() {
         <li>newsletter podatkowy,</li>
         <li>dostęp do webinarów.</li>
       </ul>
-      <p><strong>Pakiet miesięczny</strong></p>
-      <p><strong>250 zł netto</strong></p>
+      <div class="pricing-package">
+        <p>Pakiet miesięczny</p>
+        <p>250 zł netto</p>
+      </div>
     `;
   }
 }
@@ -275,6 +315,7 @@ function nextPrev(n) {
     pkListenerAttached = false;
     kpListenerAttached = false;
     userSelections.accountingPackage = null;
+    userSelections.selectedInnaOption = false;
   }
 
   // Update the current card index
@@ -294,6 +335,7 @@ function nextPrev(n) {
 // Function to validate required fields in the current card
 function validateForm(cardElement) {
   let valid = true;
+  let errorMessage = "";
 
   // Select all required inputs, selects, and textareas in the current card
   const requiredFields = cardElement.querySelectorAll(
@@ -316,14 +358,33 @@ function validateForm(cardElement) {
       valid = false;
       addInvalidClass([field]);
     } else {
+      // For the specific inputs, check if value is at least min
+      if (
+        (field.id === "documents_PK_other" ||
+          field.id === "documents_KPIR_other") &&
+        field.style.display !== "none"
+      ) {
+        const minValue = parseInt(field.getAttribute("min"));
+        const fieldValue = parseInt(field.value);
+        if (fieldValue < minValue) {
+          valid = false;
+          addInvalidClass([field]);
+          errorMessage = `Proszę podać wartość nie mniejszą niż ${minValue}`;
+        }
+      }
       // Remove 'invalid' class if the field is valid
-      field.classList.remove("invalid");
+      if (valid) {
+        field.classList.remove("invalid");
+      }
     }
   });
 
   if (!valid) {
     // Show error message if validation fails
-    showErrorMessage(cardElement, "Udziel odpowiedzi, aby kontynuować");
+    if (!errorMessage) {
+      errorMessage = "Udziel odpowiedzi, aby kontynuować";
+    }
+    showErrorMessage(cardElement, errorMessage);
   } else {
     // Hide error message if validation passes
     hideErrorMessage(cardElement);
@@ -460,6 +521,14 @@ function removeRequiredFromHiddenInputs() {
       inputs.forEach((input) => {
         input.removeAttribute("required");
       });
+    } else {
+      // Remove 'required' from hidden inputs in visible cards
+      const inputs = card.querySelectorAll("input, select, textarea");
+      inputs.forEach((input) => {
+        if (input.style.display === "none") {
+          input.removeAttribute("required");
+        }
+      });
     }
   });
 }
@@ -501,13 +570,18 @@ const pkPackages = {
     price: "2600 zł netto",
     subscriptionId: 103,
   },
+  Inna: {
+    numberOfDocuments: "Inna",
+    price: null,
+    subscriptionId: null,
+  },
 };
 
 // Function to update the description for the selected PK package
 function updateDescriptionPK(selectedValue) {
   let descriptionText = "";
   const descriptionPK = document.getElementById("description_PK");
-  if (selectedValue && pkPackages[selectedValue]) {
+  if (selectedValue && pkPackages[selectedValue] && selectedValue !== "Inna") {
     const packageInfo = pkPackages[selectedValue];
     const numberOfDocuments = packageInfo.numberOfDocuments;
     const packagePrice = packageInfo.price;
@@ -528,8 +602,10 @@ function updateDescriptionPK(selectedValue) {
         <li>newsletter podatkowy,</li>
         <li>dostęp do webinarów.</li>
       </ul>
-      <p><strong>Pakiet miesięczny</strong></p>
-      <p style="margin-bottom: 20px;"><strong>${packagePrice}</strong></p>
+      <div class="pricing-package">
+        <p>Pakiet miesięczny</p>
+        <p>${packagePrice}</p>
+      </div>
     `;
   }
 
@@ -601,10 +677,10 @@ const kpPackages = {
     price: "1500 zł netto",
     subscriptionId: 229,
   },
-  "231-250 dokumentów": {
-    numberOfDocuments: "250",
-    price: "1610 zł netto",
-    subscriptionId: 230,
+  Inna: {
+    numberOfDocuments: "Inna",
+    price: null,
+    subscriptionId: null,
   },
 };
 
@@ -612,7 +688,7 @@ const kpPackages = {
 function updateDescriptionKPIR(selectedValue) {
   let descriptionText = "";
   const descriptionKPIR = document.getElementById("description_KPIR");
-  if (selectedValue && kpPackages[selectedValue]) {
+  if (selectedValue && kpPackages[selectedValue] && selectedValue !== "Inna") {
     const packageInfo = kpPackages[selectedValue];
     const numberOfDocuments = packageInfo.numberOfDocuments;
     const packagePrice = packageInfo.price;
@@ -632,8 +708,10 @@ function updateDescriptionKPIR(selectedValue) {
         <li>newsletter podatkowy,</li>
         <li>dostęp do webinarów.</li>
       </ul>
-      <p><strong>Pakiet miesięczny</strong></p>
-      <p style="margin-bottom: 20px;"><strong>${packagePrice}</strong></p>
+      <div class="pricing-package">
+        <p>Pakiet miesięczny</p>
+        <p>${packagePrice}</p>
+      </div>
     `;
   }
 
@@ -645,13 +723,17 @@ function updateDescriptionKPIR(selectedValue) {
 
 // Function to get the accounting package based on type and selected value
 function getAccountingPackage(type, selectedValue) {
-  if (type === "pk" && pkPackages[selectedValue]) {
+  if (type === "pk" && pkPackages[selectedValue] && selectedValue !== "Inna") {
     const packageInfo = pkPackages[selectedValue];
     return {
       name: `Szeroki Mentzen ${packageInfo.numberOfDocuments}`,
       subscriptionId: packageInfo.subscriptionId,
     };
-  } else if (type === "kp" && kpPackages[selectedValue]) {
+  } else if (
+    type === "kp" &&
+    kpPackages[selectedValue] &&
+    selectedValue !== "Inna"
+  ) {
     const packageInfo = kpPackages[selectedValue];
     return {
       name: `Uproszczony Mentzen ${packageInfo.numberOfDocuments}`,
@@ -897,27 +979,35 @@ function displayPurchaseButtons() {
   const buttonsContainer = document.createElement("div");
   buttonsContainer.classList.add("buttons-container");
 
-  let buttonsHTML = "<h2>Zapraszamy do wykupienia subskrypcji!</h2>";
+  if (
+    userSelections.selectedInnaOption ||
+    (!userSelections.accountingPackage && !userSelections.hrPackage)
+  ) {
+    buttonsContainer.innerHTML =
+      "<h2>Wkrótce się z Państwem skontaktujemy, aby zaproponować odpowiedni pakiet.</h2>";
+  } else {
+    let buttonsHTML = "<h2>Zapraszamy do wykupienia subskrypcji!</h2>";
 
-  // Add button for the accounting package if selected
-  if (userSelections.accountingPackage) {
-    buttonsHTML += `
-      <a href="https://subskrypcje.mentzen.pl/subscription/${userSelections.accountingPackage.subscriptionId}" target="_blank" class="Package-button">
-        ${userSelections.accountingPackage.name}
-      </a>
-    `;
+    // Add button for the accounting package if selected
+    if (userSelections.accountingPackage) {
+      buttonsHTML += `
+        <a href="https://subskrypcje.mentzen.pl/subscription/${userSelections.accountingPackage.subscriptionId}" target="_blank" class="Package-button">
+          ${userSelections.accountingPackage.name}
+        </a>
+      `;
+    }
+
+    // Add button for the HR package if selected
+    if (userSelections.hrPackage) {
+      buttonsHTML += `
+        <a href="https://subskrypcje.mentzen.pl/subscription/${userSelections.hrPackage.subscriptionId}" target="_blank" class="Package-button">
+          ${userSelections.hrPackage.name} (${userSelections.hrPackage.packageType})
+        </a>
+      `;
+    }
+
+    buttonsContainer.innerHTML = buttonsHTML;
   }
-
-  // Add button for the HR package if selected
-  if (userSelections.hrPackage) {
-    buttonsHTML += `
-      <a href="https://subskrypcje.mentzen.pl/subscription/${userSelections.hrPackage.subscriptionId}" target="_blank" class="Package-button">
-        ${userSelections.hrPackage.name} (${userSelections.hrPackage.packageType})
-      </a>
-    `;
-  }
-
-  buttonsContainer.innerHTML = buttonsHTML;
 
   // Append the buttons to the form container
   formContainer.appendChild(buttonsContainer);
