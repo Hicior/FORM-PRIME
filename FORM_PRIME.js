@@ -285,8 +285,10 @@ function displayMentzenBezVatDescription() {
         <li>newsletter podatkowy,</li>
         <li>dostęp do webinarów.</li>
       </ul>
-      <div class="pricing-package">
+      <div class="Description-Recurring-Interval">
         <p>Pakiet miesięczny</p>
+      </div>
+      <div class="Description-Price-Container">
         <p>250 zł netto</p>
       </div>
     `;
@@ -602,8 +604,10 @@ function updateDescriptionPK(selectedValue) {
         <li>newsletter podatkowy,</li>
         <li>dostęp do webinarów.</li>
       </ul>
-      <div class="pricing-package">
+      <div class="Description-Recurring-Interval">
         <p>Pakiet miesięczny</p>
+      </div>
+      <div class="Description-Price-Container">
         <p>${packagePrice}</p>
       </div>
     `;
@@ -708,8 +712,10 @@ function updateDescriptionKPIR(selectedValue) {
         <li>newsletter podatkowy,</li>
         <li>dostęp do webinarów.</li>
       </ul>
-      <div class="pricing-package">
+      <div class="Description-Recurring-Interval">
         <p>Pakiet miesięczny</p>
+      </div>
+      <div class="Description-Price-Container">
         <p>${packagePrice}</p>
       </div>
     `;
@@ -984,7 +990,7 @@ function displayPurchaseButtons() {
     (!userSelections.accountingPackage && !userSelections.hrPackage)
   ) {
     buttonsContainer.innerHTML =
-      "<h2>Wkrótce się z Państwem skontaktujemy, aby zaproponować odpowiedni pakiet.</h2>";
+      "<h2>Wkrótce skontaktujemy się z Państwem celem przedstawienia oferty.</h2>";
   } else {
     let buttonsHTML = "<h2>Zapraszamy do wykupienia subskrypcji!</h2>";
 

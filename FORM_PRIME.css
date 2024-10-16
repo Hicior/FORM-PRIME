@@ -366,34 +366,39 @@ body {
     margin-bottom: 10px;
 }
 
-/* Pricing-package */
-.Mentzen-prime-survey-wrapper .package-description .pricing-package {
-    margin-bottom: 35px;
+/* Recurring interval / Price */
+.Mentzen-prime-survey-wrapper .package-description .Description-Recurring-Interval {
+    margin-bottom: 5px;
 }
 
-.Mentzen-prime-survey-wrapper .package-description .pricing-package p {
-    font-size: 19px;
-    margin: 0 0 5px 0;
+.Mentzen-prime-survey-wrapper .package-description .Description-Recurring-Interval p {
+    font-size: 16px;
+    margin: 0;
     padding: 0;
+    font-weight: 600;
+    color: #f59d24;
+}
+
+.Mentzen-prime-survey-wrapper .package-description .Description-Price-Container {
+    display: inline-block;
+    padding: 8px 16px;
+    border: 1px solid #f59d24;
+    border-radius: 50px;
+    margin-bottom: 30px;
+    background-color: #fff;
+}
+
+.Mentzen-prime-survey-wrapper #card-3 .package-description .Description-Price-Container {
+    margin-bottom: 20px;
+}
+
+.Mentzen-prime-survey-wrapper .package-description .Description-Price-Container p {
+    margin: 0;
+    padding: 0;
+    font-size: 18px;
     font-weight: 700;
-    opacity: 0;
-    transform: translateX(-50px);
-    animation: slideIn 0.8s ease-out forwards;
+    color: #f59d24;
 }
-
-/* Slide-In Keyframes */
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateX(-50px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-  
 
 /* Responsive Styles */
 @media (max-width: 600px) {
