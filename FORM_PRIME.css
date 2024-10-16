@@ -213,10 +213,11 @@ body {
 }
 
 .Mentzen-prime-survey-wrapper .package-description h3 {
-    font-size: 24px;
+    font-size: 26px;
     margin-bottom: 15px;
     color: #f59d24;
     font-weight: 700;
+    text-align: center;
 }
 
 .Mentzen-prime-survey-wrapper .package-description ul {
@@ -372,32 +373,28 @@ body {
 }
 
 .Mentzen-prime-survey-wrapper .package-description .Description-Recurring-Interval p {
-    font-size: 16px;
+    font-size: 19px;
     margin: 0;
     padding: 0;
     font-weight: 600;
     color: #f59d24;
+    text-align: center;
 }
 
 .Mentzen-prime-survey-wrapper .package-description .Description-Price-Container {
-    display: inline-block;
-    padding: 8px 16px;
-    border: 1px solid #f59d24;
-    border-radius: 50px;
-    margin-bottom: 30px;
-    background-color: #fff;
-}
-
-.Mentzen-prime-survey-wrapper #card-3 .package-description .Description-Price-Container {
-    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 40px;
 }
 
 .Mentzen-prime-survey-wrapper .package-description .Description-Price-Container p {
     margin: 0;
-    padding: 0;
-    font-size: 18px;
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-size: 23px;
     font-weight: 700;
-    color: #f59d24;
+    color: #fff;
+    background-color: #f59d24;
 }
 
 /* Responsive Styles */
