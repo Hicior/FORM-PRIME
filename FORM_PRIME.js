@@ -572,6 +572,16 @@ const pkPackages = {
     price: "2600 zł netto",
     subscriptionId: 103,
   },
+  "141 - 160 dokumentów": {
+    numberOfDocuments: "160",
+    price: "2800 zł netto",
+    subscriptionId: 245,
+  },
+  "161 - 180 dokumentów": {
+    numberOfDocuments: "180",
+    price: "3000 zł netto",
+    subscriptionId: 268,
+  },
   Inna: {
     numberOfDocuments: "Inna",
     price: null,
@@ -680,6 +690,11 @@ const kpPackages = {
     numberOfDocuments: "230",
     price: "1500 zł netto",
     subscriptionId: 229,
+  },
+  "231-250 dokumentów": {
+    numberOfDocuments: "250",
+    price: "1610 zł netto",
+    subscriptionId: 230,
   },
   Inna: {
     numberOfDocuments: "Inna",
