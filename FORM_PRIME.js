@@ -38,62 +38,66 @@ document.addEventListener("DOMContentLoaded", function () {
     employeesNo.addEventListener("change", handleEmployeeChange);
   }
 
-  // Get the form element and attach a submit event listener
+  // Get the form element
   const form = document.getElementById("surveyForm");
-  form.addEventListener("submit", async function (event) {
-    // Prevent the default form submission behavior
-    event.preventDefault();
 
-    // Store a reference to the loading spinner
-    const spinner = document.getElementById("loading-spinner");
+  // Check if the form exists before attaching the event listener
+  if (form) {
+    form.addEventListener("submit", async function (event) {
+      // Prevent the default form submission behavior
+      event.preventDefault();
 
-    // Show the loading spinner if it exists
-    if (spinner) {
-      spinner.style.display = "block";
-    }
+      // Store a reference to the loading spinner
+      const spinner = document.getElementById("loading-spinner");
 
-    // Remove 'required' attributes from hidden inputs before submission
-    removeRequiredFromHiddenInputs();
-
-    // Update user selections with the HR package
-    userSelections.hrPackage = getHRPackage();
-
-    // Collect form data
-    const formData = new FormData(form);
-
-    try {
-      // Send form data to the server using Fetch API
-      const response = await fetch("https://formspree.io/f/xeoqqlgq", {
-        method: "POST",
-        body: formData,
-        headers: {
-          Accept: "application/json",
-        },
-      });
-
-      // Check if the response is successful
-      if (!response.ok) {
-        throw new Error(`Form submission failed: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-
-      // Display a success message and show purchase buttons or contact message
-      form.innerHTML =
-        '<div class="submission-message">Dziękujemy! Twoja odpowiedź została przesłana.</div>';
-      displayPurchaseButtons();
-    } catch (error) {
-      // Display an error message if submission fails
-      form.innerHTML =
-        '<div class="submission-message">Wystąpił problem z przesłaniem formularza. Prosimy spróbować ponownie później lub zgłosić błąd przesyłając wiadomość na czacie w prawym dolnym rogu.</div>';
-      console.error("Form submission error:", error);
-    } finally {
-      // Hide the loading spinner after form submission completes
+      // Show the loading spinner if it exists
       if (spinner) {
-        spinner.style.display = "none";
+        spinner.style.display = "block";
       }
-    }
-  });
+
+      // Remove 'required' attributes from hidden inputs before submission
+      removeRequiredFromHiddenInputs();
+
+      // Update user selections with the HR package
+      userSelections.hrPackage = getHRPackage();
+
+      // Collect form data
+      const formData = new FormData(form);
+
+      try {
+        // Send form data to the server using Fetch API
+        const response = await fetch("https://formspree.io/f/xeoqqlgq", {
+          method: "POST",
+          body: formData,
+          headers: {
+            Accept: "application/json",
+          },
+        });
+
+        // Check if the response is successful
+        if (!response.ok) {
+          throw new Error(`Form submission failed: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+
+        // Display a success message and show purchase buttons or contact message
+        form.innerHTML =
+          '<div class="submission-message">Dziękujemy! Twoja odpowiedź została przesłana.</div>';
+        displayPurchaseButtons();
+      } catch (error) {
+        // Display an error message if submission fails
+        form.innerHTML =
+          '<div class="submission-message">Wystąpił problem z przesłaniem formularza. Prosimy spróbować ponownie później lub zgłosić błąd przesyłając wiadomość na czacie w prawym dolnym rogu.</div>';
+        console.error("Form submission error:", error);
+      } finally {
+        // Hide the loading spinner after form submission completes
+        if (spinner) {
+          spinner.style.display = "none";
+        }
+      }
+    });
+  }
 });
 
 // Function to handle changes in the employee question (Yes/No)
