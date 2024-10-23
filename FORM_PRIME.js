@@ -2,7 +2,7 @@
 let currentCard = 1;
 
 // Define the order in which the cards (questions/pages) will be displayed
-let cardOrder = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 16];
+let cardOrder = [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 16]; // Question 2 removed
 
 // Flags to ensure event listeners are attached only once
 let pkListenerAttached = false;
