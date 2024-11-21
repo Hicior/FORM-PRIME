@@ -33,6 +33,23 @@
                     <input type="radio" id="ryczaltNoVat" name="Forma księgowości" value="Ryczałt od przychodów ewidencjonowanych bez VAT" required>
                     <label for="ryczaltNoVat">Ryczałt od przychodów ewidencjonowanych bez VAT</label>
                 </div>
+
+                <!-- Business type select field -->
+                <div id="businessTypeContainer" style="display: none; margin-top: 20px;">
+                    <label for="businessType">Forma prowadzonej działalności gospodarczej</label>
+                    <select id="businessType" name="Forma prowadzonej działalności gospodarczej">
+                        <option value="">-- Wybierz opcję --</option>
+                        <option value="Spółka z ograniczoną odpowiedzialnością">Spółka z ograniczoną odpowiedzialnością</option>
+                        <option value="Spółka komandytowa">Spółka komandytowa</option>
+                        <option value="Spółka komandytowo-akcyjna">Spółka komandytowo-akcyjna</option>
+                        <option value="Fundacja">Fundacja</option>
+                        <option value="Fundacja rodzinna">Fundacja rodzinna</option>
+                        <option value="Stowarzyszenie">Stowarzyszenie</option>
+                        <option value="Spółka akcyjna">Spółka akcyjna</option>
+                        <option value="Prosta spółka akcyjna">Prosta spółka akcyjna</option>
+                    </select>
+                </div>
+
                 <!-- Miejsce na opis pakietu Mentzen bez VAT -->
                 <div id="description_MentzenBezVat" class="package-description"></div>
                 <!-- Navigation Buttons -->
@@ -265,6 +282,32 @@
                 <div class="button-group">
                     <button type="button" onclick="nextPrev(-1)">Wstecz</button>
                     <button type="submit" class="submit-card-buttons">Zatwierdź i zobacz oferowane pakiety</button>
+                </div>
+            </div>
+
+            <!-- Card 17: SA/PSA Documents -->
+            <div class="card" id="card-17">
+                <label for="documents_SA">Proszę wskazać miesięczną liczbę dokumentów (faktur sprzedażowych oraz kosztowych)</label>
+                <select id="documents_SA" name="Miesięczna liczba dokumentów SA" required>
+                    <option value="">-- Wybierz opcję --</option>
+                    <option value="do 20 dokumentów">do 20 dokumentów</option>
+                    <option value="21 - 40 dokumentów">21 - 40 dokumentów</option>
+                    <option value="Inna">Inna</option>
+                </select>
+                <!-- Input field for "Inna" option -->
+                <input type="number" id="documents_SA_other" name="Miesięczna liczba dokumentów SA Inna" style="display:none;" placeholder="Proszę podać liczbę dokumentów" min="41">
+                <!-- Description Div -->
+                <div id="description_SA" class="package-description"></div>
+                <!-- Information -->
+                <div class="Information-NumberOfDocuments">
+                    <p>Faktury wystawione na osoby fizyczne, które nie posiadają NIPu, traktujemy jako jeden zbiorczy dokument.</p>
+                    <p>Faktury sprzedażowe i kosztowe z NIP liczymy pojedynczo, każda faktura jest odrębnym dokumentem.</p>
+                    <p>Dodatkowo, osobno liczone są: miesięczne raporty z kasy fiskalnej, wyciągi bankowe oraz dokumenty wewnętrzne.</p>
+                </div>
+                <!-- Navigation Buttons -->
+                <div class="button-group">
+                    <button type="button" onclick="nextPrev(-1)">Wstecz</button>
+                    <button type="button" onclick="nextPrev(1)">Dalej</button>
                 </div>
             </div>
     

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uproszczony Kalkulator Podatkowy</title>
+    <link rel="stylesheet" href="TaxCalculator.css">
+</head>
+<body>
+    <h1>Uproszczony Kalkulator Podatkowy</h1>
+    <p>Poniższe należności zawierają podatek oraz składkę zdrowotną. Nie uwzględniają składek społecznych.</p>
+
+    <div class="input-section">
+        <div class="input-group">
+            <label>Przychód (B6)</label>
+            <input type="text" id="revenue" value="0">
+            <span class="error-message" id="revenue-error"></span>
+        </div>
+        <div class="input-group">
+            <label>Koszty (B7)</label>
+            <input type="text" id="costs" value="0">
+            <span class="error-message" id="costs-error"></span>
+        </div>
+    </div>
+
+    <div class="button-container">
+        <button id="calculateButton">Pokaż wyniki</button>
+    </div>
+
+    <div id="resultsSection" class="hidden">
+        <div class="section">
+            <div class="input-group">
+                <label>Dochód (B9)</label>
+                <input type="text" id="income" readonly>
+            </div>
+            <div class="input-group">
+                <label>Współczynnik IP BOX % (B11)</label>
+                <input type="text" id="ipBoxCoeff" value="25" readonly>
+            </div>
+        </div>
+
+        <h2 class="section-title">Składki Zdrowotne</h2>
+        <div class="section">
+            <div class="input-group">
+                <label>Składka zdrowotna liniowy (C16)</label>
+                <input type="text" id="C16" readonly>
+            </div>
+            <div class="input-group">
+                <label>Składka zdrowotna ryczałt (C17)</label>
+                <input type="text" id="C17" readonly>
+            </div>
+            <div class="input-group">
+                <label>Składka zdrowotna skala podatkowa (C18)</label>
+                <input type="text" id="C18" readonly>
+            </div>
+        </div>
+
+        <h2 class="section-title">Składki Zdrowotne do Odliczenia</h2>
+        <div class="section">
+            <div class="input-group">
+                <label>Maksymalna składka zdrowotna do odliczenia na liniowym (F16)</label>
+                <input type="text" id="F16" value="11 600,00 zł" readonly>
+            </div>
+            <div class="input-group">
+                <label>Efektywna składka zdrowotna do odliczenia na liniowym (F17)</label>
+                <input type="text" id="F17" readonly>
+            </div>
+            <div class="input-group">
+                <label>Efektywna składka zdrowotna do odliczenia na ryczałcie (F18)</label>
+                <input type="text" id="F18" readonly>
+            </div>
+        </div>
+
+        <h2 class="section-title">Formy Opodatkowania</h2>
+        <div class="section">
+            <div class="input-group">
+                <label>Skala podatkowa (C6)</label>
+                <input type="text" id="C6" readonly>
+            </div>
+            <div class="input-group">
+                <label>Skala podatkowa z małżonkiem bez dochodów (D6)</label>
+                <input type="text" id="D6" readonly>
+            </div>
+            <div class="input-group">
+                <label>Podatek liniowy (E6)</label>
+                <input type="text" id="E6" readonly>
+            </div>
+            <div class="input-group">
+                <label>IP BOX skala podatkowa (F6)</label>
+                <input type="text" id="F6" readonly>
+            </div>
+            <div class="input-group">
+                <label>IP BOX podatek liniowy (G6)</label>
+                <input type="text" id="G6" readonly>
+            </div>
+            <div class="input-group">
+                <label>IP BOX skala z małżonkiem bez dochodów (H6)</label>
+                <input type="text" id="H6" readonly>
+            </div>
+        </div>
+
+        <h2 class="section-title">Ryczałt</h2>
+        <div class="section">
+            <div class="input-group">
+                <label>Ryczałt 2% (C9)</label>
+                <input type="text" id="C9" readonly>
+            </div>
+            <div class="input-group">
+                <label>Ryczałt 3% (D9)</label>
+                <input type="text" id="D9" readonly>
+            </div>
+            <div class="input-group">
+                <label>Ryczałt 5,5% (E9)</label>
+                <input type="text" id="E9" readonly>
+            </div>
+            <div class="input-group">
+                <label>Ryczałt 8,5% (F9)</label>
+                <input type="text" id="F9" readonly>
+            </div>
+            <div class="input-group">
+                <label>Ryczałt 8,5% i 12,5% powyżej 100 000 zł (G9)</label>
+                <input type="text" id="G9" readonly>
+            </div>
+            <div class="input-group">
+                <label>Ryczałt 10% (C11)</label>
+                <input type="text" id="C11" readonly>
+            </div>
+            <div class="input-group">
+                <label>Ryczałt 12% (D11)</label>
+                <input type="text" id="D11" readonly>
+            </div>
+            <div class="input-group">
+                <label>Ryczałt 14% (E11)</label>
+                <input type="text" id="E11" readonly>
+            </div>
+            <div class="input-group">
+                <label>Ryczałt 15% (F11)</label>
+                <input type="text" id="F11" readonly>
+            </div>
+            <div class="input-group">
+                <label>Ryczałt 17% (G11)</label>
+                <input type="text" id="G11" readonly>
+            </div>
+        </div>
+    </div>
+    <script src="TaxCalculator.js"></script>
+</body>
+</html>

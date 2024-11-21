@@ -2,7 +2,7 @@
 let currentCard = 1;
 
 // Define the order in which the cards (questions/pages) will be displayed
-let cardOrder = [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 16]; // Question 2 removed
+let cardOrder = [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 16];
 
 // Flags to ensure event listeners are attached only once
 let pkListenerAttached = false;
@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       try {
         // Send form data to the server using Fetch API
-        const response = await fetch("https://formspree.io/f/xeoqqlgq", {
+        const response = await fetch("https://formspree.io/f/mvgoqawv", {
           method: "POST",
           body: formData,
           headers: {
@@ -146,12 +146,19 @@ function showCard(n) {
       displayPackages();
       attachHRPackageListeners();
     }
+    if (currentCardId === "card-17") {
+      initializeDocumentsSACard();
+    }
   }
 }
 
 // Function to initialize the accounting type selection card
 function initializeAccountingTypeCard() {
   const accountingOptions = document.getElementsByName("Forma księgowości");
+  const businessTypeContainer = document.getElementById(
+    "businessTypeContainer"
+  );
+  const businessTypeSelect = document.getElementById("businessType");
 
   // Get the currently selected accounting type
   const selectedOption = document.querySelector(
@@ -159,6 +166,14 @@ function initializeAccountingTypeCard() {
   );
   if (selectedOption) {
     userSelections.accountingTypeSelection = selectedOption.value;
+    // Show/hide business type select based on selection
+    if (selectedOption.id === "fullAccounting") {
+      businessTypeContainer.style.display = "block";
+      businessTypeSelect.setAttribute("required", "required");
+    } else {
+      businessTypeContainer.style.display = "none";
+      businessTypeSelect.removeAttribute("required");
+    }
   }
 
   // Update the description based on the selection
@@ -168,9 +183,29 @@ function initializeAccountingTypeCard() {
   accountingOptions.forEach((option) => {
     option.addEventListener("change", function () {
       userSelections.accountingTypeSelection = this.value;
+      // Show/hide business type select based on selection
+      if (this.id === "fullAccounting") {
+        businessTypeContainer.style.display = "block";
+        businessTypeSelect.setAttribute("required", "required");
+      } else {
+        businessTypeContainer.style.display = "none";
+        businessTypeSelect.removeAttribute("required");
+        businessTypeSelect.value = ""; // Reset selection when hidden
+      }
       updateMentzenBezVatDescription();
     });
   });
+
+  // Add change event listener for business type
+  if (businessTypeSelect) {
+    businessTypeSelect.addEventListener("change", function () {
+      if (userSelections.accountingTypeSelection === "Pełna księgowość") {
+        adjustCardsAfterAccountingType();
+        currentCard = cardOrder.indexOf(3) + 1;
+        showCard(currentCard);
+      }
+    });
+  }
 }
 
 // Function to initialize the documents selection for full accounting (PK)
@@ -239,6 +274,33 @@ function initializeDocumentsKPIRCard() {
   }
 }
 
+// Function to initialize the documents selection for SA/PSA accounting
+function initializeDocumentsSACard() {
+  const documentsSASelect = document.getElementById("documents_SA");
+  const documentsSAOtherInput = document.getElementById("documents_SA_other");
+
+  if (documentsSASelect) {
+    documentsSASelect.addEventListener("change", function () {
+      if (this.value === "Inna") {
+        documentsSAOtherInput.style.display = "block";
+        documentsSAOtherInput.setAttribute("required", "required");
+        userSelections.accountingPackage = null;
+        userSelections.selectedInnaOption = true;
+      } else {
+        documentsSAOtherInput.style.display = "none";
+        documentsSAOtherInput.removeAttribute("required");
+        userSelections.accountingPackage = getAccountingPackage(
+          "sa",
+          this.value
+        );
+        userSelections.selectedInnaOption = false;
+      }
+
+      updateDescriptionSA(this.value);
+    });
+  }
+}
+
 // Function to attach event listeners to HR package options
 function attachHRPackageListeners() {
   const hrOptions = document.getElementsByName("Obsługa kadrowo-płacowa");
@@ -299,6 +361,44 @@ function displayMentzenBezVatDescription() {
   }
 }
 
+// Function to update the description for the selected SA package
+function updateDescriptionSA(selectedValue) {
+  let descriptionText = "";
+  const descriptionSA = document.getElementById("description_SA");
+  if (selectedValue && saPackages[selectedValue] && selectedValue !== "Inna") {
+    const packageInfo = saPackages[selectedValue];
+    const numberOfDocuments = packageInfo.numberOfDocuments;
+    const packagePrice = packageInfo.price;
+
+    descriptionText = `
+      <h3>Potężny Mentzen ${numberOfDocuments}</h3>
+      <ul>
+        <li>prowadzenie księgowości Spółki akcyjnej lub Prostej spółki akcyjnej,</li>
+        <li>pakiet dotyczy max. ${numberOfDocuments} faktur miesięcznie,</li>
+        <li>nielimitowane konsultacje podatkowe,</li>
+        <li>automatyczne płatności,</li>
+        <li>dostęp do platformy umożliwiającej przekazywanie dokumentów,</li>
+        <li>dostęp do danych raportowych takich jak podatki, wynagrodzenia, ewidencja VAT,</li>
+        <li>powiadomienia SMS o zbliżających się terminach płatności podatków itp.,</li>
+        <li>dostęp do szablonów umów,</li>
+        <li>wsparcie w kontrolach podatkowych,</li>
+        <li>newsletter podatkowy,</li>
+        <li>dostęp do webinarów.</li>
+      </ul>
+      <div class="Description-Recurring-Interval">
+        <p>Pakiet miesięczny</p>
+      </div>
+      <div class="Description-Price-Container">
+        <p>${packagePrice}</p>
+      </div>
+    `;
+  }
+
+  if (descriptionSA) {
+    descriptionSA.innerHTML = descriptionText;
+  }
+}
+
 // Function to navigate to the next or previous card
 function nextPrev(n) {
   const currentCardId = "card-" + cardOrder[currentCard - 1];
@@ -317,7 +417,9 @@ function nextPrev(n) {
   }
   if (currentCard === cardOrder.indexOf(4) + 1 && n === -1) {
     // Remove cards 14 and 15 if going back from card 4
-    cardOrder = cardOrder.filter((card) => card !== 14 && card !== 15);
+    cardOrder = cardOrder.filter(
+      (card) => card !== 14 && card !== 15 && card !== 17
+    );
     pkListenerAttached = false;
     kpListenerAttached = false;
     userSelections.accountingPackage = null;
@@ -442,35 +544,40 @@ function hideErrorMessage(cardElement) {
 
 // Function to adjust the card order after selecting an accounting type
 function adjustCardsAfterAccountingType() {
-  // Remove cards 14 and 15 from the card order
-  cardOrder = cardOrder.filter((card) => card !== 14 && card !== 15);
+  cardOrder = cardOrder.filter(
+    (card) => card !== 14 && card !== 15 && card !== 17
+  );
 
-  // Get the selected accounting type
   const accountingType = document.querySelector(
     'input[name="Forma księgowości"]:checked'
   )?.value;
+  const businessType = document.getElementById("businessType")?.value;
 
   const index = cardOrder.indexOf(3) + 1;
 
-  // Remove 'required' attributes from both inputs
+  // Remove 'required' attributes from inputs
   document.getElementById("documents_PK").removeAttribute("required");
   document
     .getElementById("documents_KPIR_RyczaltzVAT")
     .removeAttribute("required");
+  document.getElementById("documents_SA").removeAttribute("required");
 
   if (accountingType === "Pełna księgowość") {
-    // If "Pełna księgowość" is selected, insert card 14
-    cardOrder.splice(index, 0, 14);
-    // Add 'required' attribute to the input in card 14
-    document
-      .getElementById("documents_PK")
-      .setAttribute("required", "required");
+    if (["Spółka akcyjna", "Prosta spółka akcyjna"].includes(businessType)) {
+      cardOrder.splice(index, 0, 17);
+      document
+        .getElementById("documents_SA")
+        .setAttribute("required", "required");
+    } else if (businessType) {
+      cardOrder.splice(index, 0, 14);
+      document
+        .getElementById("documents_PK")
+        .setAttribute("required", "required");
+    }
   } else if (
     accountingType === "KPiR lub Ryczałt od przychodów ewidencjonowanych z VAT"
   ) {
-    // If "KPiR lub Ryczałt z VAT" is selected, insert card 15
     cardOrder.splice(index, 0, 15);
-    // Add 'required' attribute to the input in card 15
     document
       .getElementById("documents_KPIR_RyczaltzVAT")
       .setAttribute("required", "required");
@@ -593,46 +700,6 @@ const pkPackages = {
   },
 };
 
-// Function to update the description for the selected PK package
-function updateDescriptionPK(selectedValue) {
-  let descriptionText = "";
-  const descriptionPK = document.getElementById("description_PK");
-  if (selectedValue && pkPackages[selectedValue] && selectedValue !== "Inna") {
-    const packageInfo = pkPackages[selectedValue];
-    const numberOfDocuments = packageInfo.numberOfDocuments;
-    const packagePrice = packageInfo.price;
-
-    // Construct the description text using template literals
-    descriptionText = `
-      <h3>Szeroki Mentzen ${numberOfDocuments}</h3>
-      <ul>
-        <li>prowadzenie księgowości w formie Ksiąg Rachunkowych,</li>
-        <li>pakiet dotyczy max. ${numberOfDocuments} dokumentów miesięcznie,</li>
-        <li>nielimitowane konsultacje podatkowe,</li>
-        <li>automatyczne płatności,</li>
-        <li>dostęp do platformy umożliwiającej przekazywanie dokumentów,</li>
-        <li>dostęp do danych raportowych takich jak podatki, wynagrodzenia, ewidencja VAT,</li>
-        <li>powiadomienia SMS o zbliżających się terminach płatności podatków itp.,</li>
-        <li>dostęp do szablonów umów,</li>
-        <li>wsparcie w kontrolach podatkowych,</li>
-        <li>newsletter podatkowy,</li>
-        <li>dostęp do webinarów.</li>
-      </ul>
-      <div class="Description-Recurring-Interval">
-        <p>Pakiet miesięczny</p>
-      </div>
-      <div class="Description-Price-Container">
-        <p>${packagePrice}</p>
-      </div>
-    `;
-  }
-
-  if (descriptionPK) {
-    // Update the HTML content with the description
-    descriptionPK.innerHTML = descriptionText;
-  }
-}
-
 // Object containing data for simplified accounting (KPiR/Ryczałt z VAT) packages
 const kpPackages = {
   "do 10 dokumentów": {
@@ -707,6 +774,65 @@ const kpPackages = {
   },
 };
 
+// Object containing data for SA/PSA accounting packages
+const saPackages = {
+  "do 20 dokumentów": {
+    numberOfDocuments: "20",
+    price: "2990 zł netto",
+    subscriptionId: 95,
+  },
+  "21 - 40 dokumentów": {
+    numberOfDocuments: "40",
+    price: "3910 zł netto",
+    subscriptionId: 96,
+  },
+  Inna: {
+    numberOfDocuments: "Inna",
+    price: null,
+    subscriptionId: null,
+  },
+};
+
+// Function to update the description for the selected PK package
+function updateDescriptionPK(selectedValue) {
+  let descriptionText = "";
+  const descriptionPK = document.getElementById("description_PK");
+  if (selectedValue && pkPackages[selectedValue] && selectedValue !== "Inna") {
+    const packageInfo = pkPackages[selectedValue];
+    const numberOfDocuments = packageInfo.numberOfDocuments;
+    const packagePrice = packageInfo.price;
+
+    // Construct the description text using template literals
+    descriptionText = `
+      <h3>Szeroki Mentzen ${numberOfDocuments}</h3>
+      <ul>
+        <li>prowadzenie księgowości w formie Ksiąg Rachunkowych,</li>
+        <li>pakiet dotyczy max. ${numberOfDocuments} dokumentów miesięcznie,</li>
+        <li>nielimitowane konsultacje podatkowe,</li>
+        <li>automatyczne płatności,</li>
+        <li>dostęp do platformy umożliwiającej przekazywanie dokumentów,</li>
+        <li>dostęp do danych raportowych takich jak podatki, wynagrodzenia, ewidencja VAT,</li>
+        <li>powiadomienia SMS o zbliżających się terminach płatności podatków itp.,</li>
+        <li>dostęp do szablonów umów,</li>
+        <li>wsparcie w kontrolach podatkowych,</li>
+        <li>newsletter podatkowy,</li>
+        <li>dostęp do webinarów.</li>
+      </ul>
+      <div class="Description-Recurring-Interval">
+        <p>Pakiet miesięczny</p>
+      </div>
+      <div class="Description-Price-Container">
+        <p>${packagePrice}</p>
+      </div>
+    `;
+  }
+
+  if (descriptionPK) {
+    // Update the HTML content with the description
+    descriptionPK.innerHTML = descriptionText;
+  }
+}
+
 // Function to update the description for the selected KPIR package
 function updateDescriptionKPIR(selectedValue) {
   let descriptionText = "";
@@ -762,6 +888,16 @@ function getAccountingPackage(type, selectedValue) {
     const packageInfo = kpPackages[selectedValue];
     return {
       name: `Uproszczony Mentzen ${packageInfo.numberOfDocuments}`,
+      subscriptionId: packageInfo.subscriptionId,
+    };
+  } else if (
+    type === "sa" &&
+    saPackages[selectedValue] &&
+    selectedValue !== "Inna"
+  ) {
+    const packageInfo = saPackages[selectedValue];
+    return {
+      name: `Potężny Mentzen ${packageInfo.numberOfDocuments}`,
       subscriptionId: packageInfo.subscriptionId,
     };
   } else {
