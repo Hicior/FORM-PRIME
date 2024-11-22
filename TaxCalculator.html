@@ -13,12 +13,12 @@
     <div class="input-section">
         <div class="input-group">
             <label>Przychód (B6)</label>
-            <input type="text" id="revenue" value="0">
+            <input type="text" id="revenue" value="">
             <span class="error-message" id="revenue-error"></span>
         </div>
         <div class="input-group">
             <label>Koszty (B7)</label>
-            <input type="text" id="costs" value="0">
+            <input type="text" id="costs" value="">
             <span class="error-message" id="costs-error"></span>
         </div>
     </div>
@@ -36,38 +36,6 @@
             <div class="input-group">
                 <label>Współczynnik IP BOX % (B11)</label>
                 <input type="text" id="ipBoxCoeff" value="25" readonly>
-            </div>
-        </div>
-
-        <h2 class="section-title">Składki Zdrowotne</h2>
-        <div class="section">
-            <div class="input-group">
-                <label>Składka zdrowotna liniowy (C16)</label>
-                <input type="text" id="C16" readonly>
-            </div>
-            <div class="input-group">
-                <label>Składka zdrowotna ryczałt (C17)</label>
-                <input type="text" id="C17" readonly>
-            </div>
-            <div class="input-group">
-                <label>Składka zdrowotna skala podatkowa (C18)</label>
-                <input type="text" id="C18" readonly>
-            </div>
-        </div>
-
-        <h2 class="section-title">Składki Zdrowotne do Odliczenia</h2>
-        <div class="section">
-            <div class="input-group">
-                <label>Maksymalna składka zdrowotna do odliczenia na liniowym (F16)</label>
-                <input type="text" id="F16" value="11 600,00 zł" readonly>
-            </div>
-            <div class="input-group">
-                <label>Efektywna składka zdrowotna do odliczenia na liniowym (F17)</label>
-                <input type="text" id="F17" readonly>
-            </div>
-            <div class="input-group">
-                <label>Efektywna składka zdrowotna do odliczenia na ryczałcie (F18)</label>
-                <input type="text" id="F18" readonly>
             </div>
         </div>
 
@@ -142,6 +110,39 @@
                 <input type="text" id="G11" readonly>
             </div>
         </div>
+
+        <h2 class="section-title">Składki Zdrowotne</h2>
+        <div class="section">
+            <div class="input-group">
+                <label>Składka zdrowotna liniowy (C16)</label>
+                <input type="text" id="C16" readonly>
+            </div>
+            <div class="input-group">
+                <label>Składka zdrowotna ryczałt (C17)</label>
+                <input type="text" id="C17" readonly>
+            </div>
+            <div class="input-group">
+                <label>Składka zdrowotna skala podatkowa (C18)</label>
+                <input type="text" id="C18" readonly>
+            </div>
+        </div>
+
+        <h2 class="section-title">Składki Zdrowotne do Odliczenia</h2>
+        <div class="section">
+            <div class="input-group">
+                <label>Maksymalna składka zdrowotna do odliczenia na liniowym (F16)</label>
+                <input type="text" id="F16" value="11 600,00 zł" readonly>
+            </div>
+            <div class="input-group">
+                <label>Efektywna składka zdrowotna do odliczenia na liniowym (F17)</label>
+                <input type="text" id="F17" readonly>
+            </div>
+            <div class="input-group">
+                <label>Efektywna składka zdrowotna do odliczenia na ryczałcie (F18)</label>
+                <input type="text" id="F18" readonly>
+            </div>
+        </div>
+
     </div>
     <script src="TaxCalculator.js"></script>
 </body>
