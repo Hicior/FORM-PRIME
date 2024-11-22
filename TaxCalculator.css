@@ -60,6 +60,22 @@ td.label {
   margin-bottom: 30px;
 }
 
+#skalaPodatkowa {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+#calculationSection {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+#calculationSection > *:nth-child(3) {
+  grid-column: 1 / -1;
+}
+
 .input-section {
   display: flex;
   gap: 20px;
@@ -72,6 +88,7 @@ td.label {
   min-width: 300px;
   flex: 1;
   padding: 15px;
+  box-sizing: border-box;
 }
 
 .input-section .input-group {
@@ -384,4 +401,84 @@ input.error {
   margin-top: 5px;
   min-height: 1em;
   font-style: italic;
+}
+
+.income-diff {
+  font-size: 0.8rem;
+  color: var(--app-primary-aqua);
+  transition: opacity 0.3s ease;
+  font-style: italic;
+}
+
+.checkbox-group {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+
+.checkbox-group label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: var(--app-white);
+  font-size: 0.9rem;
+}
+
+.checkbox-group input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--app-gray) !important;
+  border-radius: 4px;
+  cursor: pointer;
+  background: var(--glass-bg) !important;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.checkbox-group input[type="checkbox"]:hover {
+  border-color: var(--app-primary-aqua) !important;
+  box-shadow: 0 0 8px rgba(79, 248, 210, 0.2);
+}
+
+.checkbox-group input[type="checkbox"]:checked {
+  background: var(--app-gradient) !important;
+  border-color: transparent !important;
+}
+
+.checkbox-group input[type="checkbox"]:checked::before {
+  content: "✓";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--app-dark-blue);
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.checkbox-group input[type="checkbox"]:focus {
+  outline: none;
+  border-color: var(--app-primary-aqua);
+  box-shadow: 0 0 0 3px rgba(79, 248, 210, 0.2);
+}
+
+/* Hide all ryczałt input groups by default */
+#resultsSection .section div[id^="ryczalt-"] {
+  display: none;
+}
+
+/* Show only when has .show class */
+#resultsSection .section div[id^="ryczalt-"].show {
+  display: flex;
+}
+
+.ryczalt-message {
+  width: 100%;
+  text-align: left;
+  color: var(--app-gray);
+  font-style: italic;
+  display: none;
 }
