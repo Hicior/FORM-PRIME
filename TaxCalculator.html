@@ -35,7 +35,11 @@
             </div>
             <div class="input-group">
                 <label>Współczynnik IP BOX % (B11)</label>
-                <input type="text" id="ipBoxCoeff" value="25" readonly>
+                <div class="input-percentage">
+                    <input type="number" id="ipBoxCoeff" value="25" min="0" max="100" step="1" readonly>
+                </div>
+                <button class="edit-icon" id="ipBoxEdit" title="Edytuj">✎</button>
+                <span class="error-message" id="ipBoxCoeff-error"></span>
             </div>
         </div>
 

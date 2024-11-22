@@ -5,6 +5,8 @@ const resultsSection = document.getElementById("resultsSection");
 const calculateButton = document.getElementById("calculateButton");
 const revenueInput = document.getElementById("revenue");
 const costsInput = document.getElementById("costs");
+const ipBoxCoeffInput = document.getElementById("ipBoxCoeff");
+const ipBoxEdit = document.getElementById("ipBoxEdit");
 
 // Add these functions at the top of the file
 function formatPLN(value) {
@@ -50,6 +52,29 @@ function validateInput(value, fieldName) {
   return isValid;
 }
 
+function validateIpBoxCoeff(value) {
+  const errorElement = document.getElementById("ipBoxCoeff-error");
+  const numValue = parseFloat(value);
+  let isValid = true;
+
+  ipBoxCoeffInput.classList.remove("error");
+  errorElement.textContent = "";
+
+  if (isNaN(numValue) || value === "") {
+    errorElement.textContent = "Proszę wprowadzić wartość";
+    isValid = false;
+  } else if (numValue < 0 || numValue > 100) {
+    errorElement.textContent = "Wartość musi być między 0 a 100";
+    isValid = false;
+  }
+
+  if (!isValid) {
+    ipBoxCoeffInput.classList.add("error");
+  }
+
+  return isValid;
+}
+
 // Modify input listeners
 revenueInput.addEventListener("input", (e) => {
   const isValid = validateInput(e.target.value, "revenue");
@@ -73,11 +98,60 @@ costsInput.addEventListener("blur", (e) => {
   e.target.value = formatPLN(parsePLN(e.target.value));
 });
 
+ipBoxCoeffInput.addEventListener("input", (e) => {
+  if (
+    !e.target.hasAttribute("readonly") &&
+    validateIpBoxCoeff(e.target.value) &&
+    !resultsSection.classList.contains("hidden")
+  ) {
+    calculate();
+  }
+});
+
+// Add this function after the existing event listeners
+function makeIpBoxReadonly() {
+  if (!ipBoxCoeffInput.hasAttribute("readonly")) {
+    ipBoxCoeffInput.setAttribute("readonly", "");
+    ipBoxCoeffInput.classList.remove("editable");
+    ipBoxEdit.textContent = "✎";
+    if (validateIpBoxCoeff(ipBoxCoeffInput.value)) {
+      calculate();
+    }
+  }
+}
+
+// Replace the existing ipBoxEdit click handler with this one
+ipBoxEdit.addEventListener("click", (e) => {
+  e.stopPropagation(); // Prevent the document click handler from firing
+  const isEditable = ipBoxCoeffInput.hasAttribute("readonly");
+  if (isEditable) {
+    ipBoxCoeffInput.removeAttribute("readonly");
+    ipBoxCoeffInput.classList.add("editable");
+    ipBoxEdit.textContent = "✓";
+    ipBoxCoeffInput.focus();
+  } else {
+    makeIpBoxReadonly();
+  }
+});
+
+// Add click handler for the document
+document.addEventListener("click", (e) => {
+  if (!ipBoxCoeffInput.contains(e.target) && !ipBoxEdit.contains(e.target)) {
+    makeIpBoxReadonly();
+  }
+});
+
+// Add this to prevent the document click handler when clicking the input
+ipBoxCoeffInput.addEventListener("click", (e) => {
+  e.stopPropagation();
+});
+
 function handleCalculate() {
   const isRevenueValid = validateInput(revenueInput.value, "revenue");
   const isCostsValid = validateInput(costsInput.value, "costs");
+  const isIpBoxValid = validateIpBoxCoeff(ipBoxCoeffInput.value);
 
-  if (isRevenueValid && isCostsValid) {
+  if (isRevenueValid && isCostsValid && isIpBoxValid) {
     calculate();
     resultsSection.classList.remove("hidden");
     calculateButton.style.display = "none"; // Hide button after first click

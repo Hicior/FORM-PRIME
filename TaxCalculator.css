@@ -310,3 +310,63 @@ input.error {
   border-color: #ff4757;
   box-shadow: 0 0 0 3px rgba(255, 71, 87, 0.3);
 }
+
+/* Add these styles for the IP BOX input */
+#ipBoxCoeff {
+  background-color: var(--app-dark-blue);
+  color: var(--app-white);
+  border: 1px solid var(--app-gray);
+  cursor: text;
+  pointer-events: auto;
+  user-select: auto;
+}
+
+#ipBoxCoeff {
+  appearance: textfield;
+  -moz-appearance: textfield;
+  pointer-events: all !important;
+  user-select: text !important;
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+  text-align: right;
+}
+
+#ipBoxCoeff:focus {
+  border: 1px solid var(--app-primary-aqua) !important;
+  box-shadow: none !important;
+  transition: all 0.2s ease;
+}
+
+#ipBoxCoeff.editable {
+  padding-left: 4px !important;
+}
+
+/* Remove arrows from number input */
+#ipBoxCoeff::-webkit-inner-spin-button,
+#ipBoxCoeff::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.input-percentage {
+  display: flex;
+  align-items: center;
+}
+
+.edit-icon {
+  position: absolute;
+  right: 10px;
+  top: 5px;
+  background: none;
+  border: none;
+  color: var(--app-gray);
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 4px;
+  transition: color 0.3s ease;
+}
+
+.edit-icon:hover {
+  color: var(--app-primary-aqua);
+}
