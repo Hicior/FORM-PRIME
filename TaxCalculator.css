@@ -370,3 +370,18 @@ input.error {
 .edit-icon:hover {
   color: var(--app-primary-aqua);
 }
+
+.disclaimer {
+  color: var(--app-gray);
+  text-align: center;
+  margin: 20px 0;
+  font-style: italic;
+}
+
+.initial-value {
+  font-size: 0.85rem;
+  color: var(--app-gray);
+  margin-top: 5px;
+  min-height: 1em;
+  font-style: italic;
+}

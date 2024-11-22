@@ -8,18 +8,19 @@
 </head>
 <body>
     <h1>Uproszczony Kalkulator Podatkowy</h1>
-    <p>Poniższe należności zawierają podatek oraz składkę zdrowotną. Nie uwzględniają składek społecznych.</p>
 
     <div class="input-section">
         <div class="input-group">
             <label>Przychód (B6)</label>
             <input type="text" id="revenue" value="">
             <span class="error-message" id="revenue-error"></span>
+            <span class="initial-value" id="revenue-initial"></span>
         </div>
         <div class="input-group">
             <label>Koszty (B7)</label>
             <input type="text" id="costs" value="">
             <span class="error-message" id="costs-error"></span>
+            <span class="initial-value" id="costs-initial"></span>
         </div>
     </div>
 
@@ -43,6 +44,7 @@
             </div>
         </div>
 
+        <p class="disclaimer">Poniższe należności zawierają podatek oraz składkę zdrowotną. Nie uwzględniają składek społecznych.</p>
         <h2 class="section-title">Formy Opodatkowania</h2>
         <div class="section">
             <div class="input-group">
@@ -62,12 +64,12 @@
                 <input type="text" id="F6" readonly>
             </div>
             <div class="input-group">
-                <label>IP BOX podatek liniowy (G6)</label>
-                <input type="text" id="G6" readonly>
-            </div>
-            <div class="input-group">
                 <label>IP BOX skala z małżonkiem bez dochodów (H6)</label>
                 <input type="text" id="H6" readonly>
+            </div>
+            <div class="input-group">
+                <label>IP BOX podatek liniowy (G6)</label>
+                <input type="text" id="G6" readonly>
             </div>
         </div>
 
@@ -118,16 +120,16 @@
         <h2 class="section-title">Składki Zdrowotne</h2>
         <div class="section">
             <div class="input-group">
-                <label>Składka zdrowotna liniowy (C16)</label>
-                <input type="text" id="C16" readonly>
+                <label>Składka zdrowotna skala podatkowa (C18)</label>
+                <input type="text" id="C18" readonly>
             </div>
             <div class="input-group">
                 <label>Składka zdrowotna ryczałt (C17)</label>
                 <input type="text" id="C17" readonly>
             </div>
             <div class="input-group">
-                <label>Składka zdrowotna skala podatkowa (C18)</label>
-                <input type="text" id="C18" readonly>
+                <label>Składka zdrowotna liniowy (C16)</label>
+                <input type="text" id="C16" readonly>
             </div>
         </div>
 

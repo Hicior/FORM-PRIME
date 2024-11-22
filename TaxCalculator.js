@@ -75,6 +75,14 @@ function validateIpBoxCoeff(value) {
   return isValid;
 }
 
+// Add these variables at the top of the file after your other const declarations
+let previousIncome = null;
+let initialIncome = null;
+
+// Add these variables at the top with your other declarations
+let initialRevenue = null;
+let initialCosts = null;
+
 // Modify input listeners
 revenueInput.addEventListener("input", (e) => {
   const isValid = validateInput(e.target.value, "revenue");
@@ -146,12 +154,25 @@ ipBoxCoeffInput.addEventListener("click", (e) => {
   e.stopPropagation();
 });
 
+// Modify the handleCalculate function to initialize previousIncome
 function handleCalculate() {
   const isRevenueValid = validateInput(revenueInput.value, "revenue");
   const isCostsValid = validateInput(costsInput.value, "costs");
   const isIpBoxValid = validateIpBoxCoeff(ipBoxCoeffInput.value);
 
   if (isRevenueValid && isCostsValid && isIpBoxValid) {
+    initialRevenue = parsePLN(revenueInput.value);
+    initialCosts = parsePLN(costsInput.value);
+    initialIncome = initialRevenue - initialCosts;
+
+    // Display initial values
+    document.getElementById(
+      "revenue-initial"
+    ).textContent = `Wartość początkowa: ${formatPLN(initialRevenue)}`;
+    document.getElementById(
+      "costs-initial"
+    ).textContent = `Wartość początkowa: ${formatPLN(initialCosts)}`;
+
     calculate();
     resultsSection.classList.remove("hidden");
     calculateButton.style.display = "none"; // Hide button after first click
@@ -160,12 +181,23 @@ function handleCalculate() {
   }
 }
 
+// Update the calculate function by modifying the income calculation part
 function calculate() {
   // Inputs
   let revenue = parsePLN(document.getElementById("revenue").value); // B6
   let costs = parsePLN(document.getElementById("costs").value); // B7
   let income = revenue - costs; // B9
-  document.getElementById("income").value = formatPLN(income);
+
+  // Calculate and display income difference
+  let incomeDiff = "";
+  if (initialIncome !== null) {
+    let diff = income - initialIncome;
+    if (diff !== 0) {
+      incomeDiff = ` (${diff > 0 ? "+" : ""}${formatPLN(diff)})`;
+    }
+  }
+  document.getElementById("income").value = `${formatPLN(income)}${incomeDiff}`;
+  previousIncome = income;
 
   let ipBoxCoeff =
     parseFloat(document.getElementById("ipBoxCoeff").value) / 100; // B11
