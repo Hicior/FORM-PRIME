@@ -7,10 +7,11 @@
   --app-gradient: linear-gradient(135deg, #4ff8d2 0%, #38a3a5 100%);
   --glass-bg: rgba(41, 57, 69, 0.3);
   --glass-border: rgba(255, 255, 255, 0.1);
+  --Inter-font: "Inter", sans-serif;
 }
 
 body {
-  font-family: "Montserrat", sans-serif;
+  font-family: var(--Inter-font);
   margin: 0 auto;
   max-width: 1200px;
   padding: 20px;
@@ -111,6 +112,7 @@ td.label {
   font-size: 15px;
   background-color: var(--app-dark-blue);
   color: var(--app-white);
+  font-family: var(--Inter-font) !important;
 }
 
 #resultsSection .input-group {
@@ -128,6 +130,7 @@ td.label {
   border: none;
   background: none;
   font-size: 16px;
+  font-weight: 600;
   text-align: left;
   padding: 4px 0;
   color: var(--app-white);
@@ -154,6 +157,13 @@ td.label {
   margin-bottom: 5px;
   font-weight: 500;
   color: var(--app-white);
+}
+
+input[type="text"],
+input[type="number"],
+button,
+select {
+  font-family: var(--Inter-font);
 }
 
 input[type="text"],
@@ -204,6 +214,7 @@ input:focus {
   letter-spacing: 0.5px;
   text-transform: uppercase;
   box-shadow: 0 4px 15px rgba(79, 248, 210, 0.3);
+  font-family: var(--Inter-font);
 }
 
 .button-container button:hover {
@@ -224,6 +235,7 @@ input:focus {
   margin-top: 2.5rem;
   position: relative;
   padding-left: 1rem;
+  font-family: var(--Inter-font);
 }
 
 .section-title::before {
@@ -316,6 +328,7 @@ input:focus {
   font-size: 0.8rem;
   margin-top: 5px;
   min-height: 1em;
+  font-family: var(--Inter-font);
 }
 
 input.error {
@@ -393,6 +406,7 @@ input.error {
   text-align: center;
   margin: 20px 0;
   font-style: italic;
+  font-family: var(--Inter-font);
 }
 
 .initial-value {
@@ -401,6 +415,7 @@ input.error {
   margin-top: 5px;
   min-height: 1em;
   font-style: italic;
+  font-family: var(--Inter-font);
 }
 
 .income-diff {
@@ -408,6 +423,8 @@ input.error {
   color: var(--app-primary-aqua);
   transition: opacity 0.3s ease;
   font-style: italic;
+  font-family: var(--Inter-font);
+  font-weight: 400;
 }
 
 .checkbox-group {
@@ -423,6 +440,7 @@ input.error {
   cursor: pointer;
   color: var(--app-white);
   font-size: 0.9rem;
+  font-family: var(--Inter-font);
 }
 
 .checkbox-group input[type="checkbox"] {
