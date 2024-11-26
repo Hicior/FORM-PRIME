@@ -223,8 +223,14 @@ function handleCalculate() {
     initialG11 = parsePLN(document.getElementById("G11").value);
     resultsSection.classList.remove("hidden");
     calculateButton.style.display = "none"; // Hide button after first click
-    // Add smooth scroll to results
-    resultsSection.scrollIntoView({ behavior: "smooth" });
+
+    // Change scroll target to input-section
+    document
+      .querySelector(".input-section")
+      .scrollIntoView({ behavior: "smooth" });
+
+    // Show legal disclaimer
+    document.getElementById("legalDisclaimer").classList.add("show");
   }
 
   // Initialize ryczałt visibility based on checked boxes

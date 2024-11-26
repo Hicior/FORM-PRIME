@@ -1,57 +1,62 @@
 :root {
-  --app-gray: #c7daeb;
-  --app-primary-aqua: #4ff8d2;
-  --app-white: #fafafa;
-  --app-dark-blue: #121b22;
-  --app-dark-gray: #293945;
-  --app-gradient: linear-gradient(135deg, #4ff8d2 0%, #38a3a5 100%);
-  --glass-bg: rgba(41, 57, 69, 0.3);
-  --glass-border: rgba(255, 255, 255, 0.1);
+  --app-primary: #285c7e;
+  --app-secondary: #475569;
+  --app-background: #fafafa;
+  --app-text: #1e293b;
+  --app-text-secondary: #475569;
+  --app-primary-gradient: linear-gradient(90deg, #285c7e 0%, #3875a0 100%);
+  --app-input-bg: #ffffff;
+  --app-border: #e2e8f0;
+  --app-hover: #f8fafc;
+  --app-error: #b91c1c;
+  --glass-bg: rgba(255, 255, 255, 0.96);
+  --glass-border: rgba(40, 92, 126, 0.05);
   --Inter-font: "Inter", sans-serif;
 }
 
-body {
+*,
+*:before,
+*:after {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--app-text);
   font-family: var(--Inter-font);
+  font-weight: 600;
+}
+
+.body {
+  background: var(--app-background);
+}
+
+.Tax-Calculator-Wrapper {
+  font-family: var(--Inter-font) !important;
   margin: 0 auto;
-  max-width: 1200px;
-  padding: 20px;
-  background: var(--app-dark-blue);
+  max-width: 1100px;
+  padding: 10px;
   min-height: 100vh;
-  line-height: 1.6;
-  color: var(--app-white);
+  line-height: 1.5;
+  color: var(--app-text);
 }
 
 h1 {
   font-size: 2.5rem;
   margin-bottom: 1.5rem;
-  background: var(--app-gradient);
+  background: var(--app-primary-gradient);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   text-align: center;
-}
-
-table {
-  border-collapse: collapse;
-  width: 100%;
-  max-width: 800px;
-  margin-bottom: 20px;
-}
-
-th,
-td {
-  border: 1px solid #cccccc;
-  padding: 8px;
-  text-align: right;
-}
-
-th {
-  background-color: #f2f2f2;
-}
-
-td.label {
-  text-align: left;
-  background-color: #f9f9f9;
 }
 
 .section {
@@ -95,23 +100,23 @@ td.label {
 .input-section .input-group {
   background: var(--glass-bg);
   backdrop-filter: blur(10px);
-  border: 1px solid var(--glass-border);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--app-border);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .input-section .input-group:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 40px 0 rgba(79, 248, 210, 0.1);
+  box-shadow: 0 4px 8px rgba(26, 115, 232, 0.1);
 }
 
 .input-section .input-group input {
   padding: 8px;
-  border: 1px solid var(--app-gray);
+  border: 1px solid var(--app-text-secondary);
   border-radius: 4px;
   font-size: 15px;
   background-color: var(--app-dark-blue);
-  color: var(--app-white);
+  color: var(--app-text);
   font-family: var(--Inter-font) !important;
 }
 
@@ -120,6 +125,9 @@ td.label {
   border-radius: 8px;
   padding: 15px;
   transition: transform 0.3s ease;
+  border: 1px solid var(--app-border);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  position: relative;
 }
 
 #resultsSection .input-group:hover {
@@ -133,7 +141,7 @@ td.label {
   font-weight: 600;
   text-align: left;
   padding: 4px 0;
-  color: var(--app-white);
+  color: var(--app-text);
   pointer-events: none; /* Prevent interaction */
   user-select: none; /* Prevent text selection */
   -webkit-user-select: none;
@@ -149,14 +157,16 @@ td.label {
 }
 
 #resultsSection .input-group label {
-  color: var(--app-gray);
+  color: var(--app-text-secondary);
   font-size: 15px;
 }
 
 .input-group label {
   margin-bottom: 5px;
   font-weight: 500;
-  color: var(--app-white);
+  color: var(--app-text);
+  font-family: var(--Inter-font);
+  font-size: 1rem;
 }
 
 input[type="text"],
@@ -169,29 +179,23 @@ select {
 input[type="text"],
 input[type="number"] {
   padding: 8px;
-  border: 1px solid var(--app-gray);
+  border: 1px solid var(--app-text-secondary);
   border-radius: 4px;
   font-size: 15px;
   text-align: right;
   background-color: var(--app-dark-blue);
-  color: var(--app-white);
-  background: var(--glass-bg);
+  color: var(--app-text);
+  background: var(--app-input-bg);
   backdrop-filter: blur(10px);
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--app-border);
   padding: 12px;
   font-size: 1.1rem;
   transition: all 0.3s ease;
 }
 
 input[readonly] {
-  background-color: var(--app-dark-gray);
-  color: var(--app-white);
-}
-
-input:focus {
-  outline: none;
-  border-color: var(--app-primary-aqua);
-  box-shadow: 0 0 0 3px rgba(79, 248, 210, 0.2);
+  background-color: var(--app-background);
+  color: var(--app-text);
 }
 
 .button-container {
@@ -202,34 +206,71 @@ input:focus {
 .button-container button {
   padding: 12px 24px;
   font-size: 16px;
-  background: var(--app-gradient);
-  color: var(--app-dark-blue);
+  background: var(--app-primary-gradient);
+  color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   font-weight: bold;
   padding: 15px 30px;
   font-size: 1.1rem;
   letter-spacing: 0.5px;
   text-transform: uppercase;
-  box-shadow: 0 4px 15px rgba(79, 248, 210, 0.3);
+  box-shadow: 0 2px 4px rgba(26, 115, 232, 0.2);
   font-family: var(--Inter-font);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.button-container button:before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease-out, height 0.6s ease-out;
+  z-index: 1;
 }
 
 .button-container button:hover {
-  background-color: var(--app-white);
-  box-shadow: 0 0 15px var(--app-primary-aqua);
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(79, 248, 210, 0.4);
+  box-shadow: 0 6px 12px rgba(26, 115, 232, 0.25);
+}
+
+.button-container button:hover:before {
+  width: 300px;
+  height: 300px;
+}
+
+.button-container button:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 4px rgba(26, 115, 232, 0.2);
+}
+
+.button-container button span {
+  position: relative;
+  z-index: 2;
+}
+
+.button-container button:hover {
+  background: var(--app-primary);
+  box-shadow: 0 4px 8px rgba(26, 115, 232, 0.3);
+  transform: translateY(-1px);
+  filter: brightness(1.1);
 }
 
 .section-title {
   width: 100%;
   margin-top: 30px;
   margin-bottom: 15px;
-  color: var(--app-white);
-  border-bottom: 2px solid var(--app-primary-aqua);
+  color: var(--app-text);
+  border-bottom: 2px solid var(--app-primary);
   padding-bottom: 5px;
   font-size: 1.5rem;
   margin-top: 2.5rem;
@@ -245,7 +286,7 @@ input:focus {
   top: 44%;
   width: 4px;
   height: 24px;
-  background: var(--app-primary-aqua);
+  background: var(--app-primary);
   transform: translateY(-50%);
 }
 
@@ -293,16 +334,15 @@ input:focus {
 
 /* Add these new styles for better contrast and readability */
 input::placeholder {
-  color: var(--app-gray);
+  color: var(--app-text-secondary);
 }
 
 input:focus {
-  outline: 2px solid var(--app-primary-aqua);
-  outline-offset: -1px;
+  outline: 1px solid var(--app-primary);
 }
 
 .input-section .input-group:hover {
-  border-color: var(--app-primary-aqua);
+  border-color: var(--app-primary);
 }
 
 /* Modern Scrollbar */
@@ -311,20 +351,20 @@ input:focus {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--app-dark-blue);
+  background: var(--app-background);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--app-dark-gray);
+  background: var(--app-border);
   border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--app-primary-aqua);
+  background: var(--app-text-secondary);
 }
 
 .error-message {
-  color: #ff4757;
+  color: var(--app-error);
   font-size: 0.8rem;
   margin-top: 5px;
   min-height: 1em;
@@ -332,8 +372,8 @@ input:focus {
 }
 
 input.error {
-  border-color: #ff4757;
-  box-shadow: 0 0 0 2px rgba(255, 71, 87, 0.2);
+  border-color: var(--app-error);
+  box-shadow: 0 0 0 1px var(--app-error);
 }
 
 .input-section .input-group input.error:focus {
@@ -344,8 +384,8 @@ input.error {
 /* Add these styles for the IP BOX input */
 #ipBoxCoeff {
   background-color: var(--app-dark-blue);
-  color: var(--app-white);
-  border: 1px solid var(--app-gray);
+  color: var(--app-text);
+  border: 1px solid var(--app-text-secondary);
   cursor: text;
   pointer-events: auto;
   user-select: auto;
@@ -363,7 +403,7 @@ input.error {
 }
 
 #ipBoxCoeff:focus {
-  border: 1px solid var(--app-primary-aqua) !important;
+  border: 1px solid var(--app-primary) !important;
   box-shadow: none !important;
   transition: all 0.2s ease;
 }
@@ -390,7 +430,7 @@ input.error {
   top: 5px;
   background: none;
   border: none;
-  color: var(--app-gray);
+  color: var(--app-text-secondary);
   cursor: pointer;
   font-size: 1.2rem;
   padding: 4px;
@@ -398,11 +438,11 @@ input.error {
 }
 
 .edit-icon:hover {
-  color: var(--app-primary-aqua);
+  color: var(--app-primary);
 }
 
 .disclaimer {
-  color: var(--app-gray);
+  color: var(--app-text-secondary);
   text-align: center;
   margin: 20px 0;
   font-style: italic;
@@ -411,7 +451,7 @@ input.error {
 
 .initial-value {
   font-size: 0.85rem;
-  color: var(--app-gray);
+  color: var(--app-text-secondary);
   margin-top: 5px;
   min-height: 1em;
   font-style: italic;
@@ -420,7 +460,7 @@ input.error {
 
 .income-diff {
   font-size: 0.8rem;
-  color: var(--app-primary-aqua);
+  color: var(--app-primary);
   transition: opacity 0.3s ease;
   font-style: italic;
   font-family: var(--Inter-font);
@@ -438,7 +478,7 @@ input.error {
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  color: var(--app-white);
+  color: var(--app-text);
   font-size: 0.9rem;
   font-family: var(--Inter-font);
 }
@@ -448,22 +488,23 @@ input.error {
   -webkit-appearance: none;
   width: 18px;
   height: 18px;
-  border: 1px solid var(--app-gray) !important;
+  border: 1px solid var(--app-text-secondary) !important;
   border-radius: 4px;
   cursor: pointer;
-  background: var(--glass-bg) !important;
+  background: var(--app-input-bg) !important;
   position: relative;
   transition: all 0.3s ease;
+  color: #fff !important;
 }
 
 .checkbox-group input[type="checkbox"]:hover {
-  border-color: var(--app-primary-aqua) !important;
+  border-color: var(--app-primary) !important;
   box-shadow: 0 0 8px rgba(79, 248, 210, 0.2);
 }
 
 .checkbox-group input[type="checkbox"]:checked {
-  background: var(--app-gradient) !important;
-  border-color: transparent !important;
+  background: var(--app-primary-gradient) !important;
+  border-color: var(--app-primary) !important;
 }
 
 .checkbox-group input[type="checkbox"]:checked::before {
@@ -479,7 +520,7 @@ input.error {
 
 .checkbox-group input[type="checkbox"]:focus {
   outline: none;
-  border-color: var(--app-primary-aqua);
+  border-color: var(--app-primary);
   box-shadow: 0 0 0 3px rgba(79, 248, 210, 0.2);
 }
 
@@ -496,7 +537,58 @@ input.error {
 .ryczalt-message {
   width: 100%;
   text-align: left;
-  color: var(--app-gray);
+  color: var(--app-text-secondary);
   font-style: italic;
   display: none;
+}
+
+.legal-disclaimer {
+  margin-top: 60px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.legal-disclaimer.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.legal-disclaimer p {
+  color: var(--app-text-secondary);
+  font-size: 0.8rem;
+  line-height: 1.6;
+  text-align: justify;
+  margin: 0;
+  font-family: var(--Inter-font);
+}
+
+@media (max-width: 768px) {
+  .legal-disclaimer {
+    margin-top: 30px;
+  }
+
+  .legal-disclaimer p {
+    font-size: 0.75rem;
+    text-align: left;
+  }
+}
+
+@media (max-width: 1200px) {
+  .section-title {
+    width: unset;
+  }
+}
+
+@media (max-width: 768px) {
+  .checkbox-group {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .edit-icon {
+    bottom: 5px;
+    top: unset;
+  }
 }
