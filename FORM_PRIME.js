@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       try {
         // Send form data to the server using Fetch API
-        const response = await fetch("https://formspree.io/f/mvgoqawv", {
+        const response = await fetch("https://formspree.io/f/xeoqqlgq", {
           method: "POST",
           body: formData,
           headers: {
