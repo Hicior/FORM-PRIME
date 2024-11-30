@@ -322,7 +322,7 @@ function updateMentzenBezVatDescription() {
     displayMentzenBezVatDescription();
     userSelections.accountingPackage = {
       name: "Mentzen bez VAT",
-      subscriptionId: 108,
+      subscriptionId: 295,
     };
     userSelections.selectedInnaOption = false;
   } else {
@@ -355,7 +355,7 @@ function displayMentzenBezVatDescription() {
         <p>Pakiet miesięczny</p>
       </div>
       <div class="Description-Price-Container">
-        <p>250 zł netto</p>
+        <p>270 zł netto</p>
       </div>
     `;
   }
@@ -650,48 +650,48 @@ function removeRequiredFromHiddenInputs() {
 const pkPackages = {
   "do 20 dokumentów": {
     numberOfDocuments: "20",
-    price: "1200 zł netto",
-    subscriptionId: 209,
+    price: "1380 zł netto",
+    subscriptionId: 273,
   },
   "21 - 40 dokumentów": {
     numberOfDocuments: "40",
-    price: "1500 zł netto",
-    subscriptionId: 211,
+    price: "1720 zł netto",
+    subscriptionId: 274,
   },
   "41 - 60 dokumentów": {
     numberOfDocuments: "60",
-    price: "1800 zł netto",
-    subscriptionId: 99,
+    price: "2070 zł netto",
+    subscriptionId: 275,
   },
   "61 - 80 dokumentów": {
     numberOfDocuments: "80",
-    price: "2000 zł netto",
-    subscriptionId: 100,
+    price: "2300 zł netto",
+    subscriptionId: 276,
   },
   "81 - 100 dokumentów": {
     numberOfDocuments: "100",
-    price: "2200 zł netto",
-    subscriptionId: 101,
+    price: "2530 zł netto",
+    subscriptionId: 277,
   },
   "101 - 120 dokumentów": {
     numberOfDocuments: "120",
-    price: "2400 zł netto",
-    subscriptionId: 265,
+    price: "2760 zł netto",
+    subscriptionId: 278,
   },
   "121 - 140 dokumentów": {
     numberOfDocuments: "140",
-    price: "2600 zł netto",
-    subscriptionId: 103,
+    price: "2990 zł netto",
+    subscriptionId: 279,
   },
   "141 - 160 dokumentów": {
     numberOfDocuments: "160",
-    price: "2800 zł netto",
-    subscriptionId: 245,
+    price: "3220 zł netto",
+    subscriptionId: 280,
   },
   "161 - 180 dokumentów": {
     numberOfDocuments: "180",
-    price: "3000 zł netto",
-    subscriptionId: 268,
+    price: "3450 zł netto",
+    subscriptionId: 281,
   },
   Inna: {
     numberOfDocuments: "Inna",
@@ -704,68 +704,68 @@ const pkPackages = {
 const kpPackages = {
   "do 10 dokumentów": {
     numberOfDocuments: "10",
-    price: "350 zł netto",
-    subscriptionId: 104,
+    price: "380 zł netto",
+    subscriptionId: 282,
   },
   "11-30 dokumentów": {
     numberOfDocuments: "30",
-    price: "440 zł netto",
-    subscriptionId: 105,
+    price: "480 zł netto",
+    subscriptionId: 283,
   },
   "31-50 dokumentów": {
     numberOfDocuments: "50",
-    price: "530 zł netto",
-    subscriptionId: 106,
+    price: "580 zł netto",
+    subscriptionId: 284,
   },
   "51-70 dokumentów": {
     numberOfDocuments: "70",
-    price: "620 zł netto",
-    subscriptionId: 107,
+    price: "680 zł netto",
+    subscriptionId: 285,
   },
   "71-90 dokumentów": {
     numberOfDocuments: "90",
-    price: "730 zł netto",
-    subscriptionId: 247,
+    price: "800 zł netto",
+    subscriptionId: 286,
   },
   "91-110 dokumentów": {
     numberOfDocuments: "110",
-    price: "840 zł netto",
-    subscriptionId: 131,
+    price: "920 zł netto",
+    subscriptionId: 287,
   },
   "111-130 dokumentów": {
     numberOfDocuments: "130",
-    price: "950 zł netto",
-    subscriptionId: 261,
+    price: "1040 zł netto",
+    subscriptionId: 288,
   },
   "131-150 dokumentów": {
     numberOfDocuments: "150",
-    price: "1060 zł netto",
-    subscriptionId: 264,
+    price: "1160 zł netto",
+    subscriptionId: 289,
   },
   "151-170 dokumentów": {
     numberOfDocuments: "170",
-    price: "1170 zł netto",
-    subscriptionId: 263,
+    price: "1280 zł netto",
+    subscriptionId: 290,
   },
   "171-190 dokumentów": {
     numberOfDocuments: "190",
-    price: "1280 zł netto",
-    subscriptionId: 227,
+    price: "1400 zł netto",
+    subscriptionId: 291,
   },
   "191-210 dokumentów": {
     numberOfDocuments: "210",
-    price: "1390 zł netto",
-    subscriptionId: 228,
+    price: "1520 zł netto",
+    subscriptionId: 292,
   },
   "211-230 dokumentów": {
     numberOfDocuments: "230",
-    price: "1500 zł netto",
-    subscriptionId: 229,
+    price: "1650 zł netto",
+    subscriptionId: 293,
   },
   "231-250 dokumentów": {
     numberOfDocuments: "250",
-    price: "1610 zł netto",
-    subscriptionId: 230,
+    price: "1770 zł netto",
+    subscriptionId: 294,
   },
   Inna: {
     numberOfDocuments: "Inna",
@@ -1066,71 +1066,71 @@ const packages = [
     min: 1,
     max: 1,
     name: "Kadry Mentzena 1",
-    price: 60,
-    subscriptionId: 109,
+    price: 70,
+    subscriptionId: 301,
   },
   {
     min: 2,
     max: 2,
     name: "Kadry Mentzena 2",
-    price: 120,
-    subscriptionId: 110,
+    price: 140,
+    subscriptionId: 297,
   },
   {
     min: 3,
     max: 4,
     name: "Kadry Mentzena 3-4",
-    price: 240,
-    subscriptionId: 111,
+    price: 280,
+    subscriptionId: 298,
   },
   {
     min: 5,
     max: 6,
     name: "Kadry Mentzena 5-6",
-    price: 360,
-    subscriptionId: 112,
+    price: 420,
+    subscriptionId: 299,
   },
   {
     min: 7,
     max: 8,
     name: "Kadry Mentzena 7-8",
-    price: 480,
-    subscriptionId: 113,
+    price: 560,
+    subscriptionId: 300,
   },
   {
     min: 9,
     max: 10,
     name: "Kadry Mentzena 9-10",
-    price: 600,
-    subscriptionId: 114,
+    price: 700,
+    subscriptionId: 302,
   },
   {
     min: 11,
     max: 20,
     name: "Kadry Mentzena 11-20",
-    price: 900,
-    subscriptionId: 115,
+    price: 1050,
+    subscriptionId: 303,
   },
   {
     min: 21,
     max: 30,
     name: "Kadry Mentzena 21-30",
-    price: 1500,
-    subscriptionId: 226,
+    price: 1750,
+    subscriptionId: 304,
   },
   {
     min: 31,
     max: 40,
     name: "Kadry Mentzena 31-40",
-    price: 2100,
-    subscriptionId: 248,
+    price: 2450,
+    subscriptionId: 305,
   },
   {
     min: 41,
     max: 50,
     name: "Kadry Mentzena 41-50",
-    price: 2700,
-    subscriptionId: 267,
+    price: 3150,
+    subscriptionId: 306,
   },
 ];
 
