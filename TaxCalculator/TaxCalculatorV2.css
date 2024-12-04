@@ -74,12 +74,14 @@ h1 {
 
 #calculationSection {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, 1fr); /* 2 equal columns */
+  grid-auto-rows: auto; /* Automatically adjust row heights */
   gap: 10px;
 }
 
-#calculationSection > *:nth-child(3) {
-  grid-column: 1 / -1;
+/* Target the third row to span both columns */
+#calculationSection > :nth-child(5) {
+  grid-column: 1 / -1; /* Span from the first to the third column (end of grid) */
 }
 
 .input-section {
@@ -196,6 +198,11 @@ input[type="number"] {
 input[readonly] {
   background-color: var(--app-background);
   color: var(--app-text);
+}
+
+#resultsSection #spouseIncomeCard input {
+  user-select: text;
+  pointer-events: auto;
 }
 
 .button-container {
@@ -591,4 +598,114 @@ input.error {
     bottom: 5px;
     top: unset;
   }
+}
+
+/* Radio Group Styles - Enhanced */
+.radio-group {
+  display: flex;
+  gap: 20px;
+  margin-top: 8px;
+}
+
+.radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: var(--app-text);
+  font-size: 0.9rem;
+  user-select: none;
+}
+
+.radio-group input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--app-text-secondary) !important;
+  border-radius: 50%;
+  cursor: pointer;
+  background: var(--app-input-bg);
+  position: relative;
+  transition: all 0.3s ease;
+  margin: 0;
+  padding: 0;
+  display: inline-block;
+  vertical-align: middle;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.radio-group input[type="radio"]::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--app-primary);
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.radio-group input[type="radio"]:checked {
+  border: 2px solid var(--app-primary);
+  box-shadow: 0 0 0 2px rgba(40, 92, 126, 0.1);
+}
+
+.radio-group input[type="radio"]:checked::before {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.radio-group input[type="radio"]:hover {
+  border-color: var(--app-primary);
+  box-shadow: 0 0 0 3px rgba(40, 92, 126, 0.1);
+}
+
+.radio-group input[type="radio"]:focus {
+  outline: none;
+  border-color: var(--app-primary);
+  box-shadow: 0 0 0 3px rgba(40, 92, 126, 0.2);
+}
+
+/* Spouse Income Card Styles */
+#spouseIncomeCard.inactive {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+#spouseIncomeCard.inactive input {
+  background-color: var(--app-background);
+  border-color: var(--app-border);
+  color: var(--app-text-secondary);
+}
+
+/* Add before the last media query */
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-2px);
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(2px);
+  }
+}
+
+.shake {
+  animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+#spouseIncomeCard input::placeholder {
+  color: var(--app-text-secondary);
+  opacity: 0.6;
 }

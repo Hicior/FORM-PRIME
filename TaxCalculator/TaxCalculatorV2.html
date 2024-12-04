@@ -34,10 +34,10 @@
 
         <div id="resultsSection" class="hidden">
             <div class="section" id="calculationSection">
-                    <div class="input-group">
-                        <label>Dochód</label>
-                        <input type="text" id="income" readonly>
-                    </div>
+                <div class="input-group">
+                    <label>Dochód</label>
+                    <input type="text" id="income" readonly>
+                </div>
                 <div class="input-group">
                     <label>Współczynnik IP BOX %</label>
                     <div class="input-percentage">
@@ -45,6 +45,17 @@
                     </div>
                     <button class="edit-icon" id="ipBoxEdit" title="Edytuj">✎</button>
                     <span class="error-message" id="ipBoxCoeff-error"></span>
+                </div>
+                <div class="input-group" id="jointTaxationCard">
+                    <label>Wspólne rozliczenie z małżonkiem</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="jointTaxation" value="yes"> Tak</label>
+                        <label><input type="radio" name="jointTaxation" value="no" checked> Nie</label>
+                    </div>
+                </div>
+                <div class="input-group" id="spouseIncomeCard">
+                    <label>Dochód małżonka</label>
+                    <input type="text" id="spouseIncome" value="0" readonly>
                 </div>
                 <div class="input-group">
                     <label>Wybierz stawkę ryczałtu</label>
@@ -74,14 +85,6 @@
                 <div class="input-group">
                     <label>Skala podatkowa (IP BOX)</label>
                     <input type="text" id="F6" readonly>
-                </div>
-                <div class="input-group">
-                    <label>Skala podatkowa z małżonkiem bez dochodów</label>
-                    <input type="text" id="D6" readonly>
-                </div>
-                <div class="input-group">
-                    <label>Skala podatkowa z małżonkiem bez dochodów (IP BOX)</label>
-                    <input type="text" id="H6" readonly>
                 </div>
             </div>
 

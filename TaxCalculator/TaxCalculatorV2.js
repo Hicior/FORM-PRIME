@@ -113,6 +113,70 @@ const ryczaltCheckboxes = document.querySelectorAll(
 // Add after other initial declarations
 const ryczaltMessage = document.getElementById("ryczalt-message");
 
+// Add after other initial declarations
+const jointTaxationRadios = document.querySelectorAll(
+  'input[name="jointTaxation"]'
+);
+const spouseIncomeCard = document.getElementById("spouseIncomeCard");
+const spouseIncomeInput = document.getElementById("spouseIncome");
+
+// Add these functions after your existing variable declarations and before the calculate function
+function calculateSpouseFreeQuota0(spouseIncome) {
+  // J11
+  return spouseIncome <= 30000 ? 30000 - spouseIncome : 0;
+}
+
+function calculateSpouseFreeQuota12(spouseIncome) {
+  // K11
+  if (spouseIncome <= 120000) {
+    if (spouseIncome <= 30000) {
+      return 90000;
+    }
+    return 90000 - (spouseIncome - 30000);
+  }
+  return 0;
+}
+
+function calculateSpouseFreeQuota32(spouseIncome) {
+  // L11
+  if (spouseIncome <= 1000000) {
+    if (spouseIncome <= 120000) {
+      return 880000;
+    }
+    return 880000 - (spouseIncome - 120000);
+  }
+  return 0;
+}
+
+function calculateTaxWithSpouse(income, jointTaxation, spouseIncome, C18) {
+  if (!jointTaxation) {
+    return (
+      Math.min(income, 30000) * 0 +
+      Math.min(Math.max(income - 30000, 0), 90000) * 0.12 +
+      Math.min(Math.max(income - 120000, 0), 880000) * 0.32 +
+      Math.max(income - 1000000, 0) * 0.36 +
+      C18
+    );
+  }
+
+  const J11 = calculateSpouseFreeQuota0(spouseIncome);
+  const K11 = calculateSpouseFreeQuota12(spouseIncome);
+  const L11 = calculateSpouseFreeQuota32(spouseIncome);
+
+  return (
+    Math.min(income, 30000 + J11) * 0 +
+    Math.min(Math.max(income - (30000 + J11), 0), 90000 + K11) * 0.12 +
+    Math.min(
+      Math.max(income - (30000 + J11) - (90000 + K11), 0),
+      880000 + L11
+    ) *
+      0.32 +
+    Math.max(income - (30000 + J11) - (90000 + K11) - (880000 + L11), 0) *
+      0.36 +
+    C18
+  );
+}
+
 // Modify input listeners
 revenueInput.addEventListener("input", (e) => {
   const isValid = validateInput(e.target.value, "revenue");
@@ -184,6 +248,50 @@ ipBoxCoeffInput.addEventListener("click", (e) => {
   e.stopPropagation();
 });
 
+// Modify the joint taxation radio event listener
+jointTaxationRadios.forEach((radio) => {
+  radio.addEventListener("change", (e) => {
+    spouseIncomeCard.classList.remove("shake"); // Remove any existing shake animation
+    if (e.target.value === "yes") {
+      spouseIncomeCard.classList.remove("inactive");
+      spouseIncomeInput.removeAttribute("readonly");
+      spouseIncomeInput.value = ""; // Clear the value first
+      spouseIncomeInput.placeholder = "wartość..."; // Set placeholder
+      spouseIncomeCard.classList.add("shake");
+      setTimeout(() => {
+        spouseIncomeCard.classList.remove("shake");
+      }, 500);
+      if (!resultsSection.classList.contains("hidden")) {
+        calculate();
+      }
+    } else {
+      spouseIncomeCard.classList.add("inactive");
+      spouseIncomeInput.setAttribute("readonly", "");
+      spouseIncomeInput.value = formatPLN(0);
+      spouseIncomeInput.placeholder = ""; // Clear placeholder
+      if (!resultsSection.classList.contains("hidden")) {
+        calculate();
+      }
+    }
+  });
+});
+
+// Add these event listeners for spouse income input
+spouseIncomeInput.addEventListener("input", (e) => {
+  if (!spouseIncomeCard.classList.contains("inactive")) {
+    const isValid = validateInput(e.target.value, "spouseIncome");
+    if (!resultsSection.classList.contains("hidden") && isValid) {
+      calculate();
+    }
+  }
+});
+
+spouseIncomeInput.addEventListener("blur", (e) => {
+  if (!spouseIncomeCard.classList.contains("inactive")) {
+    e.target.value = formatPLN(parsePLN(e.target.value));
+  }
+});
+
 // Modify the handleCalculate function to initialize previousIncome
 function handleCalculate() {
   const isRevenueValid = validateInput(revenueInput.value, "revenue");
@@ -207,8 +315,6 @@ function handleCalculate() {
     // Store initial tax values after first calculation
     initialC6 = parsePLN(document.getElementById("C6").value);
     initialF6 = parsePLN(document.getElementById("F6").value);
-    initialD6 = parsePLN(document.getElementById("D6").value);
-    initialH6 = parsePLN(document.getElementById("H6").value);
     initialE6 = parsePLN(document.getElementById("E6").value);
     initialG6 = parsePLN(document.getElementById("G6").value);
     initialC9 = parsePLN(document.getElementById("C9").value);
@@ -249,6 +355,16 @@ function handleCalculate() {
   // Show message if no ryczałt options are selected initially
   const anyChecked = Array.from(ryczaltCheckboxes).some((cb) => cb.checked);
   ryczaltMessage.style.display = anyChecked ? "none" : "block";
+
+  // Initialize spouse income card state
+  const jointTaxationSelected = document.querySelector(
+    'input[name="jointTaxation"]:checked'
+  ).value;
+  if (jointTaxationSelected === "no") {
+    spouseIncomeCard.classList.add("inactive");
+    spouseIncomeInput.setAttribute("readonly", "");
+    spouseIncomeInput.value = formatPLN(0);
+  }
 }
 
 // Update the calculate function by modifying the income calculation part
@@ -324,16 +440,13 @@ function calculate() {
   let J3 = income * (1 - ipBoxCoeff);
 
   // Skala podatkowa (C6)
-  let C6;
-  if (income > 1000000) {
-    C6 = 90000 * 0.12 + 880000 * 0.32 + (income - 1000000) * 0.36 + C18;
-  } else if (income > 120000) {
-    C6 = 90000 * 0.12 + (income - 120000) * 0.32 + C18;
-  } else if (income > 30000) {
-    C6 = (income - 30000) * 0.12 + C18;
-  } else {
-    C6 = C18;
-  }
+  let C6 = calculateTaxWithSpouse(
+    income,
+    document.querySelector('input[name="jointTaxation"]:checked').value ===
+      "yes",
+    parsePLN(document.getElementById("spouseIncome").value),
+    C18
+  );
   document.getElementById("C6").value = formatPLN(C6);
 
   // Add difference display for C6
@@ -353,39 +466,6 @@ function calculate() {
       diffContainerC6.style.display = "inline";
     } else {
       diffContainerC6.style.display = "none";
-    }
-  }
-
-  // Skala podatkowa z małżonkiem bez dochodów (D6)
-  let D6;
-  if (income > 2000000) {
-    D6 = 180000 * 0.12 + 1760000 * 0.32 + (income - 2000000) * 0.36 + C18;
-  } else if (income > 240000) {
-    D6 = 180000 * 0.12 + (income - 240000) * 0.32 + C18;
-  } else if (income > 60000) {
-    D6 = (income - 60000) * 0.12 + C18;
-  } else {
-    D6 = C18;
-  }
-  document.getElementById("D6").value = formatPLN(D6);
-
-  // Add difference display for D6
-  if (initialD6 !== null) {
-    let diffD6 = D6 - initialD6;
-    let diffContainerD6 = document.getElementById("D6-diff");
-    if (!diffContainerD6) {
-      diffContainerD6 = document.createElement("div");
-      diffContainerD6.id = "D6-diff";
-      diffContainerD6.className = "income-diff";
-      document.getElementById("D6").parentNode.appendChild(diffContainerD6);
-    }
-    if (diffD6 !== 0) {
-      diffContainerD6.textContent = `${diffD6 > 0 ? "+" : ""}${formatPLN(
-        diffD6
-      )}`;
-      diffContainerD6.style.display = "inline";
-    } else {
-      diffContainerD6.style.display = "none";
     }
   }
 
@@ -484,46 +564,6 @@ function calculate() {
       diffContainerG6.style.display = "inline";
     } else {
       diffContainerG6.style.display = "none";
-    }
-  }
-
-  // IP BOX skala z ma��żonkiem bez dochodów (H6)
-  let H6_part1 = income * ipBoxCoeff * 0.14;
-  let H6_taxable = income * (1 - ipBoxCoeff);
-  let H6_tax;
-  if (H6_taxable > 2000000) {
-    H6_tax =
-      60000 * 0.09 +
-      180000 * 0.26 +
-      1760000 * 0.41 +
-      (H6_taxable - 2000000) * 0.45;
-  } else if (H6_taxable > 240000) {
-    H6_tax = 60000 * 0.09 + 180000 * 0.26 + (H6_taxable - 240000) * 0.41;
-  } else if (H6_taxable > 60000) {
-    H6_tax = 60000 * 0.09 + (H6_taxable - 60000) * 0.26;
-  } else {
-    H6_tax = H6_taxable * 0.09;
-  }
-  let H6 = H6_part1 + H6_tax;
-  document.getElementById("H6").value = formatPLN(H6);
-
-  // Add difference display for H6
-  if (initialH6 !== null) {
-    let diffH6 = H6 - initialH6;
-    let diffContainerH6 = document.getElementById("H6-diff");
-    if (!diffContainerH6) {
-      diffContainerH6 = document.createElement("div");
-      diffContainerH6.id = "H6-diff";
-      diffContainerH6.className = "income-diff";
-      document.getElementById("H6").parentNode.appendChild(diffContainerH6);
-    }
-    if (diffH6 !== 0) {
-      diffContainerH6.textContent = `${diffH6 > 0 ? "+" : ""}${formatPLN(
-        diffH6
-      )}`;
-      diffContainerH6.style.display = "inline";
-    } else {
-      diffContainerH6.style.display = "none";
     }
   }
 
@@ -653,4 +693,21 @@ ryczaltCheckboxes.forEach((checkbox) => {
     const anyChecked = Array.from(ryczaltCheckboxes).some((cb) => cb.checked);
     ryczaltMessage.style.display = anyChecked ? "none" : "block";
   });
+});
+
+// Modify the spouse income input listeners
+spouseIncomeInput.addEventListener("input", (e) => {
+  if (!spouseIncomeCard.classList.contains("inactive")) {
+    const isValid = validateInput(e.target.value, "spouseIncome");
+    if (!resultsSection.classList.contains("hidden") && isValid) {
+      calculate(); // This will trigger recalculation when spouse income changes
+    }
+  }
+});
+
+spouseIncomeInput.addEventListener("blur", (e) => {
+  if (!spouseIncomeCard.classList.contains("inactive")) {
+    e.target.value = formatPLN(parsePLN(e.target.value));
+    calculate(); // Also trigger recalculation after formatting
+  }
 });
