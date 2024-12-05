@@ -105,6 +105,10 @@ let initialE11 = null;
 let initialF11 = null;
 let initialG11 = null;
 
+// Add these to your initial variables section
+let initialC6_joint = null;
+let initialF6_joint = null;
+
 // Add this after your other initial declarations
 const ryczaltCheckboxes = document.querySelectorAll(
   '.checkbox-group input[type="checkbox"]'
@@ -252,23 +256,33 @@ ipBoxCoeffInput.addEventListener("click", (e) => {
 jointTaxationRadios.forEach((radio) => {
   radio.addEventListener("change", (e) => {
     spouseIncomeCard.classList.remove("shake"); // Remove any existing shake animation
+    const jointTaxationCards = document.querySelectorAll(
+      ".joint-taxation-card"
+    );
     if (e.target.value === "yes") {
       spouseIncomeCard.classList.remove("inactive");
       spouseIncomeInput.removeAttribute("readonly");
       spouseIncomeInput.value = ""; // Clear the value first
       spouseIncomeInput.placeholder = "wartość..."; // Set placeholder
       spouseIncomeCard.classList.add("shake");
+      jointTaxationCards.forEach((card) => card.classList.add("show"));
       setTimeout(() => {
         spouseIncomeCard.classList.remove("shake");
       }, 500);
       if (!resultsSection.classList.contains("hidden")) {
         calculate();
+        initialC6_joint = parsePLN(document.getElementById("C6_joint").value);
+        initialF6_joint = parsePLN(document.getElementById("F6_joint").value);
       }
     } else {
       spouseIncomeCard.classList.add("inactive");
       spouseIncomeInput.setAttribute("readonly", "");
       spouseIncomeInput.value = formatPLN(0);
       spouseIncomeInput.placeholder = ""; // Clear placeholder
+      jointTaxationCards.forEach((card) => card.classList.remove("show"));
+      // Reset initial values when disabling joint taxation
+      initialC6_joint = null;
+      initialF6_joint = null;
       if (!resultsSection.classList.contains("hidden")) {
         calculate();
       }
@@ -327,6 +341,20 @@ function handleCalculate() {
     initialE11 = parsePLN(document.getElementById("E11").value);
     initialF11 = parsePLN(document.getElementById("F11").value);
     initialG11 = parsePLN(document.getElementById("G11").value);
+    initialC6_joint = parsePLN(document.getElementById("C6_joint").value);
+    initialF6_joint = parsePLN(document.getElementById("F6_joint").value);
+    // Only initialize joint taxation values if joint taxation is selected
+    if (
+      document.querySelector('input[name="jointTaxation"]:checked').value ===
+      "yes"
+    ) {
+      calculate(); // Calculate again to get proper joint taxation values
+      initialC6_joint = parsePLN(document.getElementById("C6_joint").value);
+      initialF6_joint = parsePLN(document.getElementById("F6_joint").value);
+    } else {
+      initialC6_joint = null;
+      initialF6_joint = null;
+    }
     resultsSection.classList.remove("hidden");
     calculateButton.style.display = "none"; // Hide button after first click
 
@@ -436,18 +464,32 @@ function calculate() {
   let F18 = C17 * 0.5;
   document.getElementById("F18").value = formatPLN(F18);
 
-  // J3 (Pole techniczne)
+  // J3 (2 część dochodu do opodatkowania - IP BOX)
   let J3 = income * (1 - ipBoxCoeff);
 
-  // Skala podatkowa (C6)
-  let C6 = calculateTaxWithSpouse(
-    income,
-    document.querySelector('input[name="jointTaxation"]:checked').value ===
-      "yes",
-    parsePLN(document.getElementById("spouseIncome").value),
-    C18
-  );
+  // Skala podatkowa (C6) - without joint taxation
+  let C6 = calculateTaxWithSpouse(income, false, 0, C18);
   document.getElementById("C6").value = formatPLN(C6);
+
+  // Skala podatkowa (C6_joint) - with joint taxation
+  if (
+    document.querySelector('input[name="jointTaxation"]:checked').value ===
+    "yes"
+  ) {
+    let C6_joint = calculateTaxWithSpouse(
+      income,
+      true,
+      parsePLN(document.getElementById("spouseIncome").value),
+      C18
+    );
+    document.getElementById("C6_joint").value = formatPLN(C6_joint);
+
+    // Add difference display for C6_joint
+    if (initialC6_joint !== null) {
+      let diffC6_joint = C6_joint - initialC6_joint;
+      updateDifferenceDisplay("C6_joint", diffC6_joint);
+    }
+  }
 
   // Add difference display for C6
   if (initialC6 !== null) {
@@ -499,25 +541,44 @@ function calculate() {
     }
   }
 
-  // IP BOX skala podatkowa (F6)
-  let F6_part1 = income * ipBoxCoeff * 0.14;
-  let F6_taxable = income * (1 - ipBoxCoeff);
-  let F6_tax;
-  if (F6_taxable > 1000000) {
-    F6_tax =
-      30000 * 0.09 +
-      90000 * 0.26 +
-      880000 * 0.41 +
-      (F6_taxable - 1000000) * 0.45;
-  } else if (F6_taxable > 120000) {
-    F6_tax = 30000 * 0.09 + 90000 * 0.26 + (F6_taxable - 120000) * 0.41;
-  } else if (F6_taxable > 30000) {
-    F6_tax = 30000 * 0.09 + (F6_taxable - 30000) * 0.26;
-  } else {
-    F6_tax = F6_taxable * 0.09;
-  }
-  let F6 = F6_part1 + F6_tax;
+  // IP BOX skala podatkowa (F6) - without joint taxation
+  let F6 =
+    income * ipBoxCoeff * 0.05 +
+    Math.min(J3, 30000) * 0 +
+    Math.min(Math.max(J3 - 30000, 0), 90000) * 0.12 +
+    Math.min(Math.max(J3 - 120000, 0), 880000) * 0.32 +
+    Math.max(J3 - 1000000, 0) * 0.36 +
+    C18;
   document.getElementById("F6").value = formatPLN(F6);
+
+  // IP BOX skala podatkowa (F6_joint) - with joint taxation
+  if (
+    document.querySelector('input[name="jointTaxation"]:checked').value ===
+    "yes"
+  ) {
+    const spouseIncome = parsePLN(
+      document.getElementById("spouseIncome").value
+    );
+    const J11 = calculateSpouseFreeQuota0(spouseIncome);
+    const K11 = calculateSpouseFreeQuota12(spouseIncome);
+    const L11 = calculateSpouseFreeQuota32(spouseIncome);
+
+    let F6_joint =
+      income * ipBoxCoeff * 0.05 +
+      Math.min(J3, 30000 + J11) * 0 +
+      Math.min(Math.max(J3 - (30000 + J11), 0), 90000 + K11) * 0.12 +
+      Math.min(Math.max(J3 - (30000 + J11) - (90000 + K11), 0), 880000 + L11) *
+        0.32 +
+      Math.max(J3 - (30000 + J11) - (90000 + K11) - (880000 + L11), 0) * 0.36 +
+      C18;
+    document.getElementById("F6_joint").value = formatPLN(F6_joint);
+
+    // Add difference display for F6_joint
+    if (initialF6_joint !== null) {
+      let diffF6_joint = F6_joint - initialF6_joint;
+      updateDifferenceDisplay("F6_joint", diffF6_joint);
+    }
+  }
 
   // Add difference display for F6
   if (initialF6 !== null) {
@@ -539,11 +600,16 @@ function calculate() {
     }
   }
 
-  // IP BOX podatek liniowy (G6)
-  let G6_part1 = income * ipBoxCoeff * 0.099;
-  let G6_taxable = income * (1 - ipBoxCoeff) - F17;
-  let G6_part2 = G6_taxable > 0 ? G6_taxable * 0.239 : 0;
-  let G6 = G6_part1 + G6_part2;
+  // Podatek liniowy (IP BOX) (G6)
+  let G6_part1 = income * ipBoxCoeff * 0.05;
+  let taxableIncome = income * (1 - ipBoxCoeff) - F17;
+  let G6_part2;
+  if (taxableIncome > 1000000) {
+    G6_part2 = (taxableIncome - 1000000) * 0.23 + 0.19 * 1000000;
+  } else {
+    G6_part2 = taxableIncome * 0.19;
+  }
+  let G6 = G6_part1 + G6_part2 + C16;
   document.getElementById("G6").value = formatPLN(G6);
 
   // Add difference display for G6
@@ -711,3 +777,20 @@ spouseIncomeInput.addEventListener("blur", (e) => {
     calculate(); // Also trigger recalculation after formatting
   }
 });
+
+// Add this helper function for updating difference displays
+function updateDifferenceDisplay(elementId, diff) {
+  let diffContainer = document.getElementById(`${elementId}-diff`);
+  if (!diffContainer) {
+    diffContainer = document.createElement("div");
+    diffContainer.id = `${elementId}-diff`;
+    diffContainer.className = "income-diff";
+    document.getElementById(elementId).parentNode.appendChild(diffContainer);
+  }
+  if (Math.abs(diff) > 0.01) {
+    diffContainer.textContent = `${diff > 0 ? "+" : ""}${formatPLN(diff)}`;
+    diffContainer.style.display = "inline";
+  } else {
+    diffContainer.style.display = "none";
+  }
+}

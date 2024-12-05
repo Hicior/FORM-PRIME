@@ -42,7 +42,7 @@ h6 {
 .Tax-Calculator-Wrapper {
   font-family: var(--Inter-font) !important;
   margin: 0 auto;
-  max-width: 1100px;
+  max-width: 1000px;
   padding: 10px;
   min-height: 100vh;
   line-height: 1.5;
@@ -506,7 +506,7 @@ input.error {
 
 .checkbox-group input[type="checkbox"]:hover {
   border-color: var(--app-primary) !important;
-  box-shadow: 0 0 8px rgba(79, 248, 210, 0.2);
+  box-shadow: 0 0 6px rgba(40, 92, 126, 0.4);
 }
 
 .checkbox-group input[type="checkbox"]:checked {
@@ -708,4 +708,19 @@ input.error {
 #spouseIncomeCard input::placeholder {
   color: var(--app-text-secondary);
   opacity: 0.6;
+}
+
+.helper-text {
+  color: var(--app-text-secondary);
+  font-weight: normal;
+  font-size: 0.9em;
+  font-style: italic;
+}
+
+.joint-taxation-card {
+  display: none !important;
+}
+
+.joint-taxation-card.show {
+  display: flex !important;
 }
