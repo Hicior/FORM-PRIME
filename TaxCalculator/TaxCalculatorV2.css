@@ -721,6 +721,13 @@ input:focus {
   }
 }
 
+@media (max-width: 500px) {
+  .info-tooltip::before {
+    white-space: normal !important;
+    min-width: 200px;
+  }
+}
+
 /* ----------------------------------------------------------
    Toogle Switch Styles
 ----------------------------------------------------------- */
