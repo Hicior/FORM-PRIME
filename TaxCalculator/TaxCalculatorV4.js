@@ -204,44 +204,79 @@ function handleCalculate() {
   const isRevenueValid = validateInput(revenueInput.value, "revenue");
   const isCostsValid = validateInput(costsInput.value, "costs");
   const isIpBoxValid = validateIpBoxCoeff(ipBoxCoeffInput.value);
+
   if (isRevenueValid && isCostsValid && isIpBoxValid) {
     initialRevenue = parsePLN(revenueInput.value);
     initialCosts = parsePLN(costsInput.value);
     initialIncome = initialRevenue - initialCosts;
+
     document.getElementById(
       "revenue-initial"
     ).textContent = `Wartość początkowa: ${formatPLN(initialRevenue)}`;
     document.getElementById(
       "costs-initial"
     ).textContent = `Wartość początkowa: ${formatPLN(initialCosts)}`;
+
+    // Perform the initial calculation with the current settings
     calculate();
+
+    // Set initial values for standard and IP BOX calculations
     initialC6 = parsePLN(document.getElementById("C6").value);
     initialF6 = parsePLN(document.getElementById("F6").value);
     initialE6 = parsePLN(document.getElementById("E6").value);
     initialG6 = parsePLN(document.getElementById("G6").value);
+
     initialC9 = parsePLN(document.getElementById("C9").value);
     initialD9 = parsePLN(document.getElementById("D9").value);
     initialE9 = parsePLN(document.getElementById("E9").value);
     initialF9 = parsePLN(document.getElementById("F9").value);
     initialG9 = parsePLN(document.getElementById("G9").value);
+
     initialC11 = parsePLN(document.getElementById("C11").value);
     initialD11 = parsePLN(document.getElementById("D11").value);
     initialE11 = parsePLN(document.getElementById("E11").value);
     initialF11 = parsePLN(document.getElementById("F11").value);
     initialG11 = parsePLN(document.getElementById("G11").value);
-    initialC6_joint = parsePLN(document.getElementById("C6_joint").value);
-    initialF6_joint = parsePLN(document.getElementById("F6_joint").value);
-    if (
-      document.querySelector('input[name="jointTaxation"]:checked').value ===
-      "yes"
-    ) {
-      calculate();
-      initialC6_joint = parsePLN(document.getElementById("C6_joint").value);
-      initialF6_joint = parsePLN(document.getElementById("F6_joint").value);
-    } else {
-      initialC6_joint = null;
-      initialF6_joint = null;
+
+    // Now we calculate initialC6_joint and initialF6_joint as if jointTaxation = "yes"
+    // even if it's currently "no".
+
+    // Retrieve necessary values from the current state
+    let spouseIncome = parsePLN(document.getElementById("spouseIncome").value);
+    if (isNaN(spouseIncome)) {
+      spouseIncome = 0;
     }
+    let C18 = parsePLN(document.getElementById("C18").value);
+    let ipBoxCoeff =
+      parseFloat(document.getElementById("ipBoxCoeff").value) / 100;
+    let J3 = initialIncome * (1 - ipBoxCoeff);
+
+    // Calculate C6_joint assuming joint taxation = true
+    let C6_joint_val = calculateTaxWithSpouse(
+      initialIncome,
+      true,
+      spouseIncome,
+      C18
+    );
+
+    // Calculate F6_joint assuming joint taxation = true
+    const J11 = calculateSpouseFreeQuota0(spouseIncome);
+    const K11 = calculateSpouseFreeQuota12(spouseIncome);
+    const L11 = calculateSpouseFreeQuota32(spouseIncome);
+
+    let F6_joint_val =
+      initialIncome * ipBoxCoeff * 0.05 +
+      Math.min(J3, 30000 + J11) * 0 +
+      Math.min(Math.max(J3 - (30000 + J11), 0), 90000 + K11) * 0.12 +
+      Math.min(Math.max(J3 - (30000 + J11) - (90000 + K11), 0), 880000 + L11) *
+        0.32 +
+      Math.max(J3 - (30000 + J11) - (90000 + K11) - (880000 + L11), 0) * 0.36 +
+      C18;
+
+    // Store these values as initial values
+    initialC6_joint = C6_joint_val;
+    initialF6_joint = F6_joint_val;
+
     resultsSection.classList.remove("hidden");
     calculateButton.style.display = "none";
     document
@@ -249,6 +284,7 @@ function handleCalculate() {
       .scrollIntoView({ behavior: "smooth" });
     document.getElementById("legalDisclaimer").classList.add("show");
   }
+
   ryczaltCheckboxes.forEach((checkbox) => {
     const targetId = checkbox.dataset.target;
     const targetInput = document.getElementById(targetId);
@@ -261,6 +297,7 @@ function handleCalculate() {
   });
   const anyChecked = Array.from(ryczaltCheckboxes).some((cb) => cb.checked);
   ryczaltMessage.style.display = anyChecked ? "none" : "block";
+
   const jointTaxationSelected = document.querySelector(
     'input[name="jointTaxation"]:checked'
   ).value;
@@ -722,8 +759,6 @@ jointTaxationRadios.forEach((radio) => {
       spouseIncomeInput.value = formatPLN(0);
       spouseIncomeInput.placeholder = "";
       jointTaxationCards.forEach((card) => card.classList.remove("show"));
-      initialC6_joint = null;
-      initialF6_joint = null;
       if (!resultsSection.classList.contains("hidden")) calculate();
     }
   });
