@@ -30,26 +30,37 @@ function validateInput(value, fieldName) {
 
   // Clear previous error state
   input.classList.remove("error");
-  errorElement.textContent = "";
-  errorElement.classList.remove("visible");
+  if (errorElement) {
+    // Only proceed if errorElement exists
+    errorElement.textContent = "";
+    errorElement.classList.remove("visible");
+  }
 
   // Remove currency symbol and spaces for validation
   const numericValue = parsePLN(value);
 
   if (isNaN(numericValue)) {
-    errorElement.textContent = "Proszę wprowadzić prawidłową kwotę";
+    if (errorElement) {
+      errorElement.textContent = "Proszę wprowadzić prawidłową kwotę";
+    }
     isValid = false;
   } else if (numericValue < 0) {
-    errorElement.textContent = "Kwota nie może być ujemna";
+    if (errorElement) {
+      errorElement.textContent = "Kwota nie może być ujemna";
+    }
     isValid = false;
   } else if (numericValue > 999999999) {
-    errorElement.textContent = "Kwota jest zbyt duża";
+    if (errorElement) {
+      errorElement.textContent = "Kwota jest zbyt duża";
+    }
     isValid = false;
   }
 
   if (!isValid) {
     input.classList.add("error");
-    errorElement.classList.add("visible");
+    if (errorElement) {
+      errorElement.classList.add("visible");
+    }
   }
 
   return isValid;
@@ -411,30 +422,43 @@ function handleCalculate() {
   }
 }
 
-// Update the calculate function by modifying the income calculation part
 function calculate() {
   // Inputs
   let revenue = parsePLN(document.getElementById("revenue").value);
   let costs = parsePLN(document.getElementById("costs").value);
   let income = revenue - costs;
 
+  // === NEW CODE FOR MULTIPLE RATES STARTS HERE ===
+  let allocatedRevenues = {};
+  if (multipleRatesToggle.checked) {
+    const totalRevenue = parsePLN(document.getElementById("revenue").value);
+    let usedRevenue = 0;
+    const rateInputsVisible = document.querySelectorAll(".rate-input.show");
+    rateInputsVisible.forEach((input) => {
+      const allocatedValue = parsePLN(input.value) || 0;
+      usedRevenue += allocatedValue;
+      allocatedRevenues[input.dataset.for] = allocatedValue;
+    });
+
+    // === VALIDATION REMOVED HERE ===
+    // Previously, there was a check to see if allocated revenue exceeds total revenue.
+    // This validation has been removed as per your request.
+  }
+  // === NEW CODE FOR MULTIPLE RATES ENDS HERE ===
+
   // Set the main income value
   document.getElementById("income").value = formatPLN(income);
 
-  // Handle the difference display
   if (initialIncome !== null) {
     let diff = income - initialIncome;
-    // Find or create difference container
     let diffContainer = document.getElementById("income-diff-container");
     if (!diffContainer) {
       diffContainer = document.createElement("div");
       diffContainer.id = "income-diff-container";
       diffContainer.className = "income-diff";
-      // Insert after income input
       document.getElementById("income").parentNode.appendChild(diffContainer);
     }
 
-    // Only show difference if it's not zero
     if (diff !== 0) {
       diffContainer.textContent = `${diff > 0 ? "+" : ""}${formatPLN(diff)}`;
       diffContainer.style.display = "inline";
@@ -483,6 +507,59 @@ function calculate() {
   // J3 (2 część dochodu do opodatkowania - IP BOX)
   let J3 = income * (1 - ipBoxCoeff);
 
+  function calculateSpouseFreeQuota0(spouseIncome) {
+    return spouseIncome <= 30000 ? 30000 - spouseIncome : 0;
+  }
+
+  function calculateSpouseFreeQuota12(spouseIncome) {
+    if (spouseIncome <= 120000) {
+      if (spouseIncome <= 30000) {
+        return 90000;
+      }
+      return 90000 - (spouseIncome - 30000);
+    }
+    return 0;
+  }
+
+  function calculateSpouseFreeQuota32(spouseIncome) {
+    if (spouseIncome <= 1000000) {
+      if (spouseIncome <= 120000) {
+        return 880000;
+      }
+      return 880000 - (spouseIncome - 120000);
+    }
+    return 0;
+  }
+
+  function calculateTaxWithSpouse(income, jointTaxation, spouseIncome, C18) {
+    if (!jointTaxation) {
+      return (
+        Math.min(income, 30000) * 0 +
+        Math.min(Math.max(income - 30000, 0), 90000) * 0.12 +
+        Math.min(Math.max(income - 120000, 0), 880000) * 0.32 +
+        Math.max(income - 1000000, 0) * 0.36 +
+        C18
+      );
+    }
+
+    const J11 = calculateSpouseFreeQuota0(spouseIncome);
+    const K11 = calculateSpouseFreeQuota12(spouseIncome);
+    const L11 = calculateSpouseFreeQuota32(spouseIncome);
+
+    return (
+      Math.min(income, 30000 + J11) * 0 +
+      Math.min(Math.max(income - (30000 + J11), 0), 90000 + K11) * 0.12 +
+      Math.min(
+        Math.max(income - (30000 + J11) - (90000 + K11), 0),
+        880000 + L11
+      ) *
+        0.32 +
+      Math.max(income - (30000 + J11) - (90000 + K11) - (880000 + L11), 0) *
+        0.36 +
+      C18
+    );
+  }
+
   // Skala podatkowa (C6) - without joint taxation
   let C6 = calculateTaxWithSpouse(income, false, 0, C18);
   document.getElementById("C6").value = formatPLN(C6);
@@ -500,14 +577,12 @@ function calculate() {
     );
     document.getElementById("C6_joint").value = formatPLN(C6_joint);
 
-    // Add difference display for C6_joint
     if (initialC6_joint !== null) {
       let diffC6_joint = C6_joint - initialC6_joint;
       updateDifferenceDisplay("C6_joint", diffC6_joint);
     }
   }
 
-  // Add difference display for C6
   if (initialC6 !== null) {
     let diffC6 = C6 - initialC6;
     let diffContainerC6 = document.getElementById("C6-diff");
@@ -536,7 +611,6 @@ function calculate() {
   }
   document.getElementById("E6").value = formatPLN(E6);
 
-  // Add difference display for E6
   if (initialE6 !== null) {
     let diffE6 = E6 - initialE6;
     let diffContainerE6 = document.getElementById("E6-diff");
@@ -546,7 +620,6 @@ function calculate() {
       diffContainerE6.className = "income-diff";
       document.getElementById("E6").parentNode.appendChild(diffContainerE6);
     }
-    // Only show difference if it's greater than 0.01 or less than -0.01
     if (Math.abs(diffE6) > 0.01) {
       diffContainerE6.textContent = `${diffE6 > 0 ? "+" : ""}${formatPLN(
         diffE6
@@ -567,7 +640,6 @@ function calculate() {
     C18;
   document.getElementById("F6").value = formatPLN(F6);
 
-  // IP BOX skala podatkowa (F6_joint) - with joint taxation
   if (
     document.querySelector('input[name="jointTaxation"]:checked').value ===
     "yes"
@@ -589,14 +661,12 @@ function calculate() {
       C18;
     document.getElementById("F6_joint").value = formatPLN(F6_joint);
 
-    // Add difference display for F6_joint
     if (initialF6_joint !== null) {
       let diffF6_joint = F6_joint - initialF6_joint;
       updateDifferenceDisplay("F6_joint", diffF6_joint);
     }
   }
 
-  // Add difference display for F6
   if (initialF6 !== null) {
     let diffF6 = F6 - initialF6;
     let diffContainerF6 = document.getElementById("F6-diff");
@@ -628,7 +698,6 @@ function calculate() {
   let G6 = G6_part1 + G6_part2 + C16;
   document.getElementById("G6").value = formatPLN(G6);
 
-  // Add difference display for G6
   if (initialG6 !== null) {
     let diffG6 = G6 - initialG6;
     let diffContainerG6 = document.getElementById("G6-diff");
@@ -638,7 +707,6 @@ function calculate() {
       diffContainerG6.className = "income-diff";
       document.getElementById("G6").parentNode.appendChild(diffContainerG6);
     }
-    // Only show difference if it's greater than 0.01 or less than -0.01
     if (Math.abs(diffG6) > 0.01) {
       diffContainerG6.textContent = `${diffG6 > 0 ? "+" : ""}${formatPLN(
         diffG6
@@ -649,68 +717,114 @@ function calculate() {
     }
   }
 
+  // === UPDATED RYCZAŁT CALCULATIONS USING ALLOCATED REVENUE IF ENABLED ===
+
+  function getAllocatedOrFullRateValue(rateId) {
+    if (multipleRatesToggle.checked) {
+      const rateInput = document.querySelector(
+        `.rate-input[data-for="${rateId}"]`
+      );
+      if (!rateInput || !rateInput.value) {
+        return 0; // Return 0 if the input is empty or not found
+      }
+      return allocatedRevenues[rateId] || 0;
+    }
+    return revenue;
+  }
+
   // Ryczałt 2% (C9)
-  let C9 = (revenue - F18) * 0.02 + C17;
-  document.getElementById("C9").value = formatPLN(C9);
+  {
+    let base = getAllocatedOrFullRateValue("C9") - F18;
+    let C9 = base * 0.02 + C17;
+    document.getElementById("C9").value = formatPLN(C9);
+  }
 
   // Ryczałt 3% (D9)
-  let D9 = (revenue - F18) * 0.03 + C17;
-  document.getElementById("D9").value = formatPLN(D9);
+  {
+    let base = getAllocatedOrFullRateValue("D9") - F18;
+    let D9 = base * 0.03 + C17;
+    document.getElementById("D9").value = formatPLN(D9);
+  }
 
   // Ryczałt 5,5% (E9)
-  let E9 = (revenue - F18) * 0.055 + C17;
-  document.getElementById("E9").value = formatPLN(E9);
+  {
+    let base = getAllocatedOrFullRateValue("E9") - F18;
+    let E9 = base * 0.055 + C17;
+    document.getElementById("E9").value = formatPLN(E9);
+  }
 
   // Ryczałt 8,5% (F9)
-  let F9 = (revenue - F18) * 0.085 + C17;
-  document.getElementById("F9").value = formatPLN(F9);
+  {
+    let base = getAllocatedOrFullRateValue("F9") - F18;
+    let F9 = base * 0.085 + C17;
+    document.getElementById("F9").value = formatPLN(F9);
+  }
 
   // Ryczałt 8,5% i 12,5% powyżej 100 000 zł (G9)
-  let G9;
-  if (revenue <= 100000) {
-    G9 = (revenue - F18) * 0.085 + C17;
-  } else {
-    G9 = (revenue - (F18 + 100000)) * 0.125 + C17 + 8500;
+  {
+    let allocated = getAllocatedOrFullRateValue("G9");
+    let G9;
+    if (allocated <= 100000) {
+      G9 = (allocated - F18) * 0.085 + C17;
+    } else {
+      G9 = (allocated - (F18 + 100000)) * 0.125 + C17 + 8500;
+    }
+    document.getElementById("G9").value = formatPLN(G9);
   }
-  document.getElementById("G9").value = formatPLN(G9);
 
   // Ryczałt 10% (C11)
-  let C11 = (revenue - F18) * 0.1 + C17;
-  document.getElementById("C11").value = formatPLN(C11);
+  {
+    let base = getAllocatedOrFullRateValue("C11") - F18;
+    let C11 = base * 0.1 + C17;
+    document.getElementById("C11").value = formatPLN(C11);
+  }
 
   // Ryczałt 12% (D11)
-  let D11 = (revenue - F18) * 0.12 + C17;
-  document.getElementById("D11").value = formatPLN(D11);
+  {
+    let base = getAllocatedOrFullRateValue("D11") - F18;
+    let D11 = base * 0.12 + C17;
+    document.getElementById("D11").value = formatPLN(D11);
+  }
 
   // Ryczałt 14% (E11)
-  let E11 = (revenue - F18) * 0.14 + C17;
-  document.getElementById("E11").value = formatPLN(E11);
+  {
+    let base = getAllocatedOrFullRateValue("E11") - F18;
+    let E11 = base * 0.14 + C17;
+    document.getElementById("E11").value = formatPLN(E11);
+  }
 
   // Ryczałt 15% (F11)
-  let F11 = (revenue - F18) * 0.15 + C17;
-  document.getElementById("F11").value = formatPLN(F11);
+  {
+    let base = getAllocatedOrFullRateValue("F11") - F18;
+    let F11 = base * 0.15 + C17;
+    document.getElementById("F11").value = formatPLN(F11);
+  }
 
   // Ryczałt 17% (G11)
-  let G11 = (revenue - F18) * 0.17 + C17;
-  document.getElementById("G11").value = formatPLN(G11);
+  {
+    let base = getAllocatedOrFullRateValue("G11") - F18;
+    let G11 = base * 0.17 + C17;
+    document.getElementById("G11").value = formatPLN(G11);
+  }
 
-  // Repeat the same pattern for other ryczałt fields
+  // Difference displays for ryczałt fields
   const ryczaltFields = [
-    { id: "C9", value: C9, initial: initialC9 },
-    { id: "D9", value: D9, initial: initialD9 },
-    { id: "E9", value: E9, initial: initialE9 },
-    { id: "F9", value: F9, initial: initialF9 },
-    { id: "G9", value: G9, initial: initialG9 },
-    { id: "C11", value: C11, initial: initialC11 },
-    { id: "D11", value: D11, initial: initialD11 },
-    { id: "E11", value: E11, initial: initialE11 },
-    { id: "F11", value: F11, initial: initialF11 },
-    { id: "G11", value: G11, initial: initialG11 },
+    { id: "C9", initial: initialC9 },
+    { id: "D9", initial: initialD9 },
+    { id: "E9", initial: initialE9 },
+    { id: "F9", initial: initialF9 },
+    { id: "G9", initial: initialG9 },
+    { id: "C11", initial: initialC11 },
+    { id: "D11", initial: initialD11 },
+    { id: "E11", initial: initialE11 },
+    { id: "F11", initial: initialF11 },
+    { id: "G11", initial: initialG11 },
   ];
 
   ryczaltFields.forEach((field) => {
     if (field.initial !== null) {
-      let diff = field.value - field.initial;
+      let currentValue = parsePLN(document.getElementById(field.id).value);
+      let diff = currentValue - field.initial;
       let diffContainer = document.getElementById(`${field.id}-diff`);
       if (!diffContainer) {
         diffContainer = document.createElement("div");
@@ -727,13 +841,12 @@ function calculate() {
     }
   });
 
-  // Only update visible ryczałt inputs
   ryczaltCheckboxes.forEach((checkbox) => {
     if (checkbox.checked) {
       const targetId = checkbox.dataset.target;
       const targetInput = document.getElementById(targetId);
-      // Make sure the input value is updated only if it's visible
       if (targetInput.closest(".input-group").style.display !== "none") {
+        // You can add additional logic here if needed
       }
     }
   });
@@ -745,14 +858,23 @@ ryczaltCheckboxes.forEach((checkbox) => {
     const targetId = this.dataset.target;
     const targetInput = document.getElementById(targetId);
     const targetGroup = targetInput.closest(".input-group");
+    const rateInput =
+      this.closest(".checkbox-wrapper").querySelector(".rate-input");
 
     if (this.checked) {
       targetGroup.style.display = "flex";
+      if (multipleRatesToggle.checked) {
+        rateInput.classList.add("show");
+        rateInput.value = ""; // Clear the input when showing it
+        targetInput.value = formatPLN(0); // Reset the tax calculation to 0
+      }
     } else {
       targetGroup.style.display = "none";
+      rateInput.classList.remove("show");
+      rateInput.value = "";
+      targetInput.value = formatPLN(0); // Reset the tax calculation to 0 when unchecking
     }
 
-    // Check if any checkbox is checked
     const anyChecked = Array.from(ryczaltCheckboxes).some((cb) => cb.checked);
     ryczaltMessage.style.display = anyChecked ? "none" : "block";
   });
@@ -853,13 +975,10 @@ ryczaltCheckboxes.forEach((checkbox) => {
   });
 });
 
-// Add event listeners for rate inputs to handle formatting
 document.querySelectorAll(".rate-input").forEach((input) => {
   input.addEventListener("input", (e) => {
-    const isValid = validateInput(e.target.value, e.target.dataset.for);
-    if (!resultsSection.classList.contains("hidden") && isValid) {
-      calculate();
-    }
+    // Removed validation for rate inputs
+    calculate();
     if (multipleRatesToggle.checked) {
       updateRemainingRevenue();
     }
@@ -870,6 +989,10 @@ document.querySelectorAll(".rate-input").forEach((input) => {
       e.target.value = formatPLN(parsePLN(e.target.value));
       updateRemainingRevenue();
     }
+  });
+
+  input.addEventListener("focus", (e) => {
+    e.target.select();
   });
 });
 
@@ -883,25 +1006,36 @@ const revenueInfoText = document.querySelector(
 // Replace the existing toggle event listener
 multipleRatesToggle.addEventListener("change", function (e) {
   const isEnabled = e.target.checked;
-  const checkedCheckboxes = document.querySelectorAll(
-    '.checkbox-wrapper input[type="checkbox"]:checked'
-  );
+  const rateInputs = document.querySelectorAll(".rate-input");
+  const revenueInfo = document.querySelector(".multiple-rates-revenue-info");
+  const wrapper = document.querySelector(".multiple-rates-wrapper");
+
+  revenueInfo.style.display = isEnabled ? "block" : "none";
+  wrapper.style.justifyContent = isEnabled ? "space-between" : "flex-end";
 
   rateInputs.forEach((input) => {
     const wrapper = input.closest(".checkbox-wrapper");
     const checkbox = wrapper.querySelector('input[type="checkbox"]');
+    const targetId = checkbox.dataset.target;
+    const targetInput = document.getElementById(targetId);
 
     if (isEnabled && checkbox.checked) {
       input.classList.add("show");
+      input.value = ""; // Clear the rate input
+      targetInput.value = formatPLN(0); // Reset tax calculation to 0
     } else {
       input.classList.remove("show");
       input.value = "";
+      if (!isEnabled && checkbox.checked) {
+        calculate(); // Recalculate with full revenue when disabling multiple rates
+      }
     }
   });
-  const revenueInfo = document.querySelector(".multiple-rates-revenue-info");
-  revenueInfo.style.display = isEnabled ? "block" : "none";
+
   if (isEnabled) {
-    updateRemainingRevenue(); // Initialize the remaining revenue display
+    updateRemainingRevenue();
+  } else if (!resultsSection.classList.contains("hidden")) {
+    calculate(); // Recalculate all taxes with full revenue
   }
 });
 
@@ -927,6 +1061,7 @@ ryczaltCheckboxes.forEach((checkbox) => {
       targetGroup.style.display = "none";
       rateInput.classList.remove("show");
       rateInput.value = "";
+      targetInput.value = formatPLN(0); // Reset the tax calculation to 0 when unchecking
       if (multipleRatesEnabled) {
         updateRemainingRevenue();
       }

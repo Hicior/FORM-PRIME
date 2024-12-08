@@ -1,3 +1,6 @@
+/* ----------------------------------------------------------
+   VARIABLE DEFINITIONS & BASE SETTINGS
+----------------------------------------------------------- */
 :root {
   --app-primary: #285c7e;
   --app-secondary: #475569;
@@ -14,16 +17,20 @@
   --Inter-font: "Inter", sans-serif;
 }
 
+/* ----------------------------------------------------------
+   GLOBAL RESET & BOX SIZING
+----------------------------------------------------------- */
 *,
 *:before,
 *:after {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+/* ----------------------------------------------------------
+   TYPOGRAPHY & GLOBAL TEXT STYLES
+----------------------------------------------------------- */
 h1,
 h2,
 h3,
@@ -39,24 +46,23 @@ h6 {
   background: var(--app-background);
 }
 
+input[type="text"],
+input[type="number"],
+button,
+select {
+  font-family: var(--Inter-font);
+}
+
+/* ----------------------------------------------------------
+   WRAPPERS & LAYOUT CONTAINERS
+----------------------------------------------------------- */
 .Tax-Calculator-Wrapper {
   font-family: var(--Inter-font) !important;
   margin: 0 auto;
   max-width: 1000px;
   padding: 10px;
-  min-height: 100vh;
   line-height: 1.5;
   color: var(--app-text);
-}
-
-h1 {
-  font-size: 2.5rem;
-  margin-bottom: 1.5rem;
-  background: var(--app-primary-gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  text-align: center;
 }
 
 .section {
@@ -74,16 +80,72 @@ h1 {
 
 #calculationSection {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* 2 equal columns */
-  grid-auto-rows: auto; /* Automatically adjust row heights */
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: auto;
   gap: 10px;
 }
 
-/* Target the third row to span both columns */
+/* Spanning a specific item across columns */
 #calculationSection > :nth-child(5) {
-  grid-column: 1 / -1; /* Span from the first to the third column (end of grid) */
+  grid-column: 1 / -1;
 }
 
+/* Results section transitions & visibility */
+#resultsSection {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+#resultsSection.hidden {
+  display: none;
+}
+
+#resultsSection:not(.hidden) {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ----------------------------------------------------------
+   HEADINGS & TITLES
+----------------------------------------------------------- */
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  background: var(--app-primary-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-align: center;
+}
+
+.section-title {
+  width: 100%;
+  margin-top: 2.5rem;
+  margin-bottom: 15px;
+  color: var(--app-text);
+  border-bottom: 2px solid var(--app-primary);
+  padding-bottom: 5px;
+  font-size: 1.5rem;
+  position: relative;
+  padding-left: 1rem;
+  font-family: var(--Inter-font);
+}
+
+.section-title::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 44%;
+  width: 4px;
+  height: 24px;
+  background: var(--app-primary);
+  transform: translateY(-50%);
+}
+
+/* ----------------------------------------------------------
+   INPUT SECTIONS & GROUPS
+----------------------------------------------------------- */
 .input-section {
   display: flex;
   gap: 20px;
@@ -96,9 +158,9 @@ h1 {
   min-width: 300px;
   flex: 1;
   padding: 15px;
-  box-sizing: border-box;
 }
 
+/* Glass effect groups */
 .input-section .input-group {
   background: var(--glass-bg);
   backdrop-filter: blur(10px);
@@ -112,6 +174,7 @@ h1 {
   box-shadow: 0 4px 8px rgba(26, 115, 232, 0.1);
 }
 
+/* Inputs inside input groups */
 .input-section .input-group input {
   padding: 8px;
   border: 1px solid var(--app-text-secondary);
@@ -144,14 +207,10 @@ h1 {
   text-align: left;
   padding: 4px 0;
   color: var(--app-text);
-  pointer-events: none; /* Prevent interaction */
-  user-select: none; /* Prevent text selection */
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
+  pointer-events: none;
+  user-select: none;
 }
 
-/* Remove focus outline for result inputs */
 #resultsSection .input-group input:focus {
   outline: none;
   box-shadow: none;
@@ -164,64 +223,171 @@ h1 {
 }
 
 .input-group label {
-  margin-bottom: 5px;
+  margin-bottom: 3px;
   font-weight: 500;
   color: var(--app-text);
   font-family: var(--Inter-font);
   font-size: 1rem;
 }
 
-input[type="text"],
-input[type="number"],
-button,
-select {
-  font-family: var(--Inter-font);
-}
-
+/* Shared input styling */
 input[type="text"],
 input[type="number"] {
-  padding: 8px;
-  border: 1px solid var(--app-text-secondary);
+  padding: 12px;
+  border: 1px solid var(--app-border);
   border-radius: 4px;
-  font-size: 15px;
+  font-size: 1.1rem;
   text-align: right;
-  background-color: var(--app-dark-blue);
   color: var(--app-text);
   background: var(--app-input-bg);
   backdrop-filter: blur(10px);
-  border: 1px solid var(--app-border);
-  padding: 12px;
-  font-size: 1.1rem;
   transition: all 0.3s ease;
 }
 
 input[readonly] {
   background-color: var(--app-background);
-  color: var(--app-text);
+  color: var (--app-text);
 }
 
+/* Special case for spouse income card */
 #resultsSection #spouseIncomeCard input {
   user-select: text;
   pointer-events: auto;
 }
 
+/* Editable IP BOX coefficient input */
+#ipBoxCoeff {
+  background-color: var(--app-dark-blue);
+  color: var (--app-text);
+  border: 1px solid var(--app-text-secondary);
+  cursor: text;
+  pointer-events: unset !important;
+  user-select: text !important;
+}
+
+#ipBoxCoeff:focus {
+  border: 1px solid var(--app-primary) !important;
+  box-shadow: none !important;
+  transition: all 0.2s ease;
+}
+
+#ipBoxCoeff.editable {
+  padding-left: 4px !important;
+}
+
+#ipBoxCoeff::-webkit-inner-spin-button,
+#ipBoxCoeff::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Percentage input layout */
+.input-percentage {
+  display: flex;
+  align-items: center;
+  cursor: text;
+}
+
+/* Icons inside inputs */
+.edit-icon {
+  position: absolute;
+  right: 10px;
+  top: 5px;
+  background: none;
+  border: none;
+  color: var(--app-text-secondary);
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 4px;
+  transition: color 0.3s ease;
+}
+
+.edit-icon:hover {
+  color: var(--app-primary);
+}
+
+/* Messages & Helper Text */
+.error-message {
+  color: var(--app-error);
+  font-size: 0.8rem;
+  margin-top: 5px;
+  min-height: 0;
+  font-family: var(--Inter-font);
+  display: none;
+}
+
+.error-message.visible {
+  display: block;
+  min-height: 1em;
+}
+
+.initial-value {
+  font-size: 14px;
+  color: var(--app-text-secondary);
+  margin-top: 15px;
+  min-height: 1em;
+  font-style: italic;
+  font-family: var(--Inter-font);
+  font-weight: 400;
+}
+
+.income-diff {
+  font-size: 0.8rem;
+  color: var(--app-primary);
+  transition: opacity 0.3s ease;
+  font-style: italic;
+  font-family: var(--Inter-font);
+  font-weight: 400;
+}
+
+/* Ryczałt display toggling */
+#resultsSection .section div[id^="ryczalt-"] {
+  display: none;
+}
+
+#resultsSection .section div[id^="ryczalt-"].show {
+  display: flex;
+}
+
+.ryczalt-message {
+  width: 100%;
+  text-align: left;
+  color: var(--app-text-secondary);
+  font-style: italic;
+  display: none;
+}
+
+/* Joint taxation card visibility */
+.joint-taxation-card {
+  display: none !important;
+}
+
+.joint-taxation-card.show {
+  display: flex !important;
+}
+
+/* Spouse income card states */
+#spouseIncomeCard.inactive {
+  opacity: 0.6;
+}
+
+/* ----------------------------------------------------------
+   BUTTONS & INTERACTABLE ELEMENTS
+----------------------------------------------------------- */
 .button-container {
   text-align: center;
   margin: 20px 0;
 }
 
 .button-container button {
-  padding: 12px 24px;
-  font-size: 16px;
+  padding: 15px 30px;
+  font-size: 1.1rem;
   background: var(--app-primary-gradient);
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
   font-weight: bold;
-  padding: 15px 30px;
-  font-size: 1.1rem;
   letter-spacing: 0.5px;
   text-transform: uppercase;
   box-shadow: 0 2px 4px rgba(26, 115, 232, 0.2);
@@ -246,8 +412,10 @@ input[readonly] {
 }
 
 .button-container button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(26, 115, 232, 0.25);
+  background: var(--app-primary);
+  box-shadow: 0 4px 8px rgba(26, 115, 232, 0.3);
+  transform: translateY(-1px);
+  filter: brightness(1.1);
 }
 
 .button-container button:hover:before {
@@ -265,219 +433,14 @@ input[readonly] {
   z-index: 2;
 }
 
-.button-container button:hover {
-  background: var(--app-primary);
-  box-shadow: 0 4px 8px rgba(26, 115, 232, 0.3);
-  transform: translateY(-1px);
-  filter: brightness(1.1);
-}
-
-.section-title {
-  width: 100%;
-  margin-top: 30px;
-  margin-bottom: 15px;
-  color: var(--app-text);
-  border-bottom: 2px solid var(--app-primary);
-  padding-bottom: 5px;
-  font-size: 1.5rem;
-  margin-top: 2.5rem;
-  position: relative;
-  padding-left: 1rem;
-  font-family: var(--Inter-font);
-}
-
-.section-title::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 44%;
-  width: 4px;
-  height: 24px;
-  background: var(--app-primary);
-  transform: translateY(-50%);
-}
-
-.hidden {
-  display: none;
-}
-
-#resultsSection {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
-}
-
-#resultsSection.hidden {
-  display: none;
-}
-
-#resultsSection:not(.hidden) {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-@media (max-width: 768px) {
-  .input-group {
-    min-width: 100%;
-  }
-
-  .section {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  h1 {
-    font-size: 2rem;
-  }
-
-  .section-title {
-    font-size: 1.3rem;
-  }
-
-  .input-section {
-    flex-direction: column;
-  }
-}
-
-/* Add these new styles for better contrast and readability */
-input::placeholder {
-  color: var(--app-text-secondary);
-}
-
-input:focus {
-  outline: 1px solid var(--app-primary);
-}
-
-.input-section .input-group:hover {
-  border-color: var(--app-primary);
-}
-
-/* Modern Scrollbar */
-::-webkit-scrollbar {
-  width: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--app-background);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--app-border);
-  border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--app-text-secondary);
-}
-
-.error-message {
-  color: var(--app-error);
-  font-size: 0.8rem;
-  margin-top: 5px;
-  min-height: 1em;
-  font-family: var(--Inter-font);
-}
-
-input.error {
-  border-color: var(--app-error);
-  box-shadow: 0 0 0 1px var(--app-error);
-}
-
-.input-section .input-group input.error:focus {
-  border-color: #ff4757;
-  box-shadow: 0 0 0 3px rgba(255, 71, 87, 0.3);
-}
-
-/* Add these styles for the IP BOX input */
-#ipBoxCoeff {
-  background-color: var(--app-dark-blue);
-  color: var(--app-text);
-  border: 1px solid var(--app-text-secondary);
-  cursor: text;
-  pointer-events: auto;
-  user-select: auto;
-}
-
-#ipBoxCoeff {
-  appearance: textfield;
-  -moz-appearance: textfield;
-  pointer-events: all !important;
-  user-select: text !important;
-  -webkit-user-select: text !important;
-  -moz-user-select: text !important;
-  -ms-user-select: text !important;
-  text-align: right;
-}
-
-#ipBoxCoeff:focus {
-  border: 1px solid var(--app-primary) !important;
-  box-shadow: none !important;
-  transition: all 0.2s ease;
-}
-
-#ipBoxCoeff.editable {
-  padding-left: 4px !important;
-}
-
-/* Remove arrows from number input */
-#ipBoxCoeff::-webkit-inner-spin-button,
-#ipBoxCoeff::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-.input-percentage {
-  display: flex;
-  align-items: center;
-}
-
-.edit-icon {
-  position: absolute;
-  right: 10px;
-  top: 5px;
-  background: none;
-  border: none;
-  color: var(--app-text-secondary);
-  cursor: pointer;
-  font-size: 1.2rem;
-  padding: 4px;
-  transition: color 0.3s ease;
-}
-
-.edit-icon:hover {
-  color: var(--app-primary);
-}
-
-.disclaimer {
-  color: var(--app-text-secondary);
-  text-align: center;
-  margin: 20px 0;
-  font-style: italic;
-  font-family: var(--Inter-font);
-}
-
-.initial-value {
-  font-size: 0.85rem;
-  color: var(--app-text-secondary);
-  margin-top: 5px;
-  min-height: 1em;
-  font-style: italic;
-  font-family: var(--Inter-font);
-}
-
-.income-diff {
-  font-size: 0.8rem;
-  color: var(--app-primary);
-  transition: opacity 0.3s ease;
-  font-style: italic;
-  font-family: var(--Inter-font);
-  font-weight: 400;
-}
-
+/* ----------------------------------------------------------
+   CHECKBOXES & RADIO BUTTONS
+----------------------------------------------------------- */
 .checkbox-group {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 10px;
+  align-items: center;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 15px;
 }
 
 .checkbox-group label {
@@ -531,76 +494,7 @@ input.error {
   box-shadow: 0 0 0 3px rgba(79, 248, 210, 0.2);
 }
 
-/* Hide all ryczałt input groups by default */
-#resultsSection .section div[id^="ryczalt-"] {
-  display: none;
-}
-
-/* Show only when has .show class */
-#resultsSection .section div[id^="ryczalt-"].show {
-  display: flex;
-}
-
-.ryczalt-message {
-  width: 100%;
-  text-align: left;
-  color: var(--app-text-secondary);
-  font-style: italic;
-  display: none;
-}
-
-.legal-disclaimer {
-  margin-top: 60px;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.5s ease, visibility 0.5s ease;
-}
-
-.legal-disclaimer.show {
-  opacity: 1;
-  visibility: visible;
-}
-
-.legal-disclaimer p {
-  color: var(--app-text-secondary);
-  font-size: 0.8rem;
-  line-height: 1.6;
-  text-align: justify;
-  margin: 0;
-  font-family: var(--Inter-font);
-}
-
-@media (max-width: 768px) {
-  .legal-disclaimer {
-    margin-top: 30px;
-  }
-
-  .legal-disclaimer p {
-    font-size: 0.75rem;
-    text-align: left;
-  }
-}
-
-@media (max-width: 1200px) {
-  .section-title {
-    width: unset;
-  }
-}
-
-@media (max-width: 768px) {
-  .checkbox-group {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 480px) {
-  .edit-icon {
-    bottom: 5px;
-    top: unset;
-  }
-}
-
-/* Radio Group Styles - Enhanced */
+/* Radio group styles */
 .radio-group {
   display: flex;
   gap: 20px;
@@ -668,19 +562,93 @@ input.error {
   box-shadow: 0 0 0 3px rgba(40, 92, 126, 0.2);
 }
 
-/* Spouse Income Card Styles */
-#spouseIncomeCard.inactive {
-  opacity: 0.6;
-  pointer-events: none;
+/* ----------------------------------------------------------
+   OTHER ELEMENTS & STATES
+----------------------------------------------------------- */
+.hidden {
+  display: none;
 }
 
-#spouseIncomeCard.inactive input {
-  background-color: var(--app-background);
-  border-color: var(--app-border);
+.disclaimer {
+  color: var(--app-text-secondary);
+  text-align: center;
+  margin: 20px 0;
+  font-style: italic;
+  font-family: var(--Inter-font);
+}
+
+.helper-text {
+  color: var(--app-text-secondary);
+  font-weight: normal;
+  font-size: 0.9em;
+  font-style: italic;
+  font-weight: 400;
+}
+
+.legal-disclaimer {
+  margin-top: 60px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.legal-disclaimer.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.legal-disclaimer p {
+  color: var(--app-text-secondary);
+  font-size: 13px;
+  line-height: 1.6;
+  text-align: justify;
+  margin: 0;
+  font-family: var(--Inter-font);
+  font-weight: 400;
+}
+
+.shake {
+  animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+/* ----------------------------------------------------------
+   PLACEHOLDERS & FOCUS STATES
+----------------------------------------------------------- */
+input::placeholder {
   color: var(--app-text-secondary);
 }
 
-/* Add before the last media query */
+input:focus {
+  outline: 1px solid var(--app-primary);
+}
+
+.input-section .input-group:hover {
+  border-color: var(--app-primary);
+}
+
+/* ----------------------------------------------------------
+   SCROLLBAR STYLES
+----------------------------------------------------------- */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--app-background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #cbd5e1;
+}
+
+/* ----------------------------------------------------------
+   KEYFRAMES & ANIMATIONS
+----------------------------------------------------------- */
 @keyframes shake {
   0%,
   100% {
@@ -701,26 +669,263 @@ input.error {
   }
 }
 
-.shake {
-  animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+/* ----------------------------------------------------------
+   RESPONSIVE DESIGN (MEDIA QUERIES)
+----------------------------------------------------------- */
+@media (max-width: 768px) {
+  .input-group {
+    min-width: 100%;
+  }
+
+  .section {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  .section-title {
+    font-size: 1.3rem;
+  }
+
+  .input-section {
+    flex-direction: column;
+  }
+
+  .legal-disclaimer {
+    margin-top: 30px;
+  }
+
+  .legal-disclaimer p {
+    font-size: 0.75rem;
+    text-align: left;
+  }
+
+  .checkbox-group {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
-#spouseIncomeCard input::placeholder {
-  color: var(--app-text-secondary);
-  opacity: 0.6;
+@media (max-width: 1200px) {
+  .section-title {
+    width: unset;
+  }
 }
 
-.helper-text {
+@media (max-width: 480px) {
+  .edit-icon {
+    bottom: 5px;
+    top: unset;
+  }
+}
+
+/* ----------------------------------------------------------
+   Toogle Switch Styles
+----------------------------------------------------------- */
+.multiple-rates-control {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 30px;
+  padding-right: 10px;
+  gap: 8px;
+}
+
+.multiple-rates-control img {
+  width: 16px;
+  height: 16px;
+  cursor: help;
+  margin-bottom: 1px;
+}
+
+.multiple-rates-control img:hover {
+  opacity: 0.7;
+}
+
+.toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   color: var(--app-text-secondary);
+  font-weight: 400 !important;
+  user-select: none;
+  margin-bottom: 0 !important;
+}
+
+.toggle-switch {
+  position: relative;
+  width: 36px;
+  height: 18px;
+  display: inline-block;
+  margin-left: 8px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--app-background);
+  transition: 0.2s;
+  border-radius: 34px;
+  border: 1px solid var(--app-border);
+  min-width: 36px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 12px;
+  width: 12px;
+  left: 2px;
+  bottom: 2px;
+  background-color: var(--app-text-secondary);
+  transition: 0.2s;
+  border-radius: 50%;
+}
+
+.toggle-switch input:checked + .slider {
+  background: var(--app-hover);
+  border-color: var(--app-primary);
+}
+
+.toggle-switch input:checked + .slider:before {
+  transform: translateX(18px);
+  background-color: var(--app-primary);
+}
+
+.toggle-switch:hover .slider {
+  border-color: var(--app-primary);
+}
+
+/* Tooltip for info icon */
+.info-tooltip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.info-tooltip::before {
+  content: "Aktywuj tę opcję, aby rozdzielić dochód pomiędzy wiele stawek ryczałtu.";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 12px;
+  background: var(--app-text);
+  color: white;
+  font-size: 13px;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  z-index: 10;
   font-weight: normal;
-  font-size: 0.9em;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  margin-bottom: 5px;
+}
+
+.info-tooltip::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: var(--app-text);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  margin-bottom: -5px;
+}
+
+.info-tooltip:hover::before,
+.info-tooltip:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+.multiple-rates-revenue-info {
+  font-size: 14px;
+  color: var(--app-text-secondary);
   font-style: italic;
+  margin-top: 30px;
+  max-width: 50%;
+  display: none;
 }
 
-.joint-taxation-card {
-  display: none !important;
+.multiple-rates-wrapper {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-end;
+  max-width: 100%;
 }
 
-.joint-taxation-card.show {
-  display: flex !important;
+/* ----------------------------------------------------------
+   Rate Input Styles
+----------------------------------------------------------- */
+.checkbox-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rate-input {
+  width: 100%;
+  display: none;
+  pointer-events: unset !important;
+}
+
+.rate-input.show {
+  display: block;
+}
+
+.rate-input::placeholder {
+  color: var(--app-text-secondary);
+  font-style: italic;
+  opacity: 0.7;
+}
+
+.rate-input:focus {
+  border-color: var(--app-primary);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(40, 92, 126, 0.1);
+}
+
+.rates-total {
+  margin-top: -20px;
+  margin-bottom: 30px;
+  padding: 15px;
+  background: var(--glass-bg);
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  font-family: var(--Inter-font);
+}
+
+.rates-total.hidden {
+  display: none;
+}
+
+.rates-total-label {
+  color: var(--app-text-secondary);
+  font-size: 16px;
+}
+
+#ratesTotalValue {
+  font-weight: 600;
+  color: var(--app-text);
+  font-size: 16px;
 }
