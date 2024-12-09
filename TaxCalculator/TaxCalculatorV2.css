@@ -823,7 +823,7 @@ input:focus {
 }
 
 .info-tooltip::before {
-  content: "Aktywuj tę opcję, aby rozdzielić dochód pomiędzy wiele stawek ryczałtu.";
+  content: "Aktywuj tę opcję, aby rozdzielić przychód pomiędzy wiele stawek ryczałtu.";
   position: absolute;
   bottom: 100%;
   left: 50%;
