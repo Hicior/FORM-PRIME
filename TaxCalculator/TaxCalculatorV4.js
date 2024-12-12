@@ -333,16 +333,24 @@ function calculate() {
   let ipBoxCoeff =
     parseFloat(document.getElementById("ipBoxCoeff").value) / 100;
   const healthContribLimit = 11600;
-  let tempC16 = (income / 12) * 0.09;
-  let C16 = tempC16 <= 381.78 ? 381.78 * 12 : 0.049 * income;
+  let C16;
+  if (income / 12 <= 7791.3) {
+    C16 = 4581.36;
+  } else {
+    C16 = 0.049 * income;
+  }
   document.getElementById("C16").value = formatPLN(C16);
   let C17;
   if (revenue > 300000) C17 = 12 * 1258.39;
   else if (revenue > 60000) C17 = 12 * 699.11;
   else C17 = 12 * 419.46;
   document.getElementById("C17").value = formatPLN(C17);
-  let tempC18 = (income / 12) * 0.09;
-  let C18 = tempC18 <= 381.78 ? 381.78 * 12 : 0.09 * income;
+  let C18;
+  if (income / 12 <= 4242) {
+    C18 = 4581.36;
+  } else {
+    C18 = 0.09 * income;
+  }
   document.getElementById("C18").value = formatPLN(C18);
   let F17 = Math.min(C16, healthContribLimit);
   document.getElementById("F17").value = formatPLN(F17);
@@ -421,11 +429,13 @@ function calculate() {
 
   let E6;
   if (income - F17 > 1000000) {
-    E6 = (income - (F17 + 1000000)) * 0.23 + 0.19 * 1000000 + C16;
+    E6 = (income - (F17 + 1000000)) * 0.279 + 0.239 * 1000000;
   } else {
-    E6 = (income - F17) * 0.19 + C16;
+    E6 = (income - F17) * 0.239;
   }
   document.getElementById("E6").value = formatPLN(E6);
+
+  // Update difference display if initial value exists
   if (initialE6 !== null) {
     let diffE6 = E6 - initialE6;
     let diffContainerE6 = document.getElementById("E6-diff");
@@ -496,14 +506,20 @@ function calculate() {
     }
   }
 
-  let G6_part1 = income * ipBoxCoeff * 0.05;
-  let taxableIncome = income * (1 - ipBoxCoeff) - F17;
-  let G6_part2;
-  if (taxableIncome > 1000000)
-    G6_part2 = (taxableIncome - 1000000) * 0.23 + 0.19 * 1000000;
-  else G6_part2 = taxableIncome * 0.19;
-  let G6 = G6_part1 + G6_part2 + C16;
+  function calculateG6(income, ipBoxCoeff, F17) {
+    const part1 = income * ipBoxCoeff * 0.099;
+    const baseAmount = income * (1 - ipBoxCoeff) - F17;
+    const part2 =
+      baseAmount > 1000000
+        ? (baseAmount - 1000000) * 0.279 + 0.239 * 1000000
+        : baseAmount * 0.239;
+    return part1 + part2;
+  }
+
+  // Main calculation and DOM manipulation
+  let G6 = calculateG6(income, ipBoxCoeff, F17);
   document.getElementById("G6").value = formatPLN(G6);
+
   if (initialG6 !== null) {
     let diffG6 = G6 - initialG6;
     let diffContainerG6 = document.getElementById("G6-diff");
