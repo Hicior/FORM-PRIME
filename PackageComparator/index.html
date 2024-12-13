@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Package Comparison</title>
+<link rel="stylesheet" href="style.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="comparison-app">
+  <header class="header">
+    <h1>Porównaj ze sobą dowolne pakiety</h1>
+  </header>
+  <main>
+    <div class="comparison-container">
+      <div class="toggle-container">
+        <label class="toggle-switch">
+          <input type="checkbox" id="diffToggle" aria-label="Show differences only">
+          <span class="toggle-slider"></span>
+        </label>
+        <span>Show differences only</span>
+      </div>
+      <div id="comparison-header" class="comparison-header">
+        <div class="feature-header">Features</div>
+        <div class="package-column">
+          <select id="package1" class="header-select"></select>
+        </div>
+        <div class="package-column">
+          <select id="package2" class="header-select"></select>
+        </div>
+      </div>
+      <div id="comparisonBody" class="comparison-body">
+      </div>
+    </div>
+  </main>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
