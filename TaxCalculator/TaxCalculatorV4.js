@@ -430,8 +430,12 @@ function calculate() {
   let E6;
   if (income - F17 > 1000000) {
     E6 = (income - (F17 + 1000000)) * 0.279 + 0.239 * 1000000;
-  } else {
+  } else if (income - F17 > 93495.6) {
     E6 = (income - F17) * 0.239;
+  } else if (income - F17 > 0) {
+    E6 = 4581.36 + (income - F17) * 0.19;
+  } else {
+    E6 = 4581.36;
   }
   document.getElementById("E6").value = formatPLN(E6);
 
@@ -507,13 +511,23 @@ function calculate() {
   }
 
   function calculateG6(income, ipBoxCoeff, F17) {
-    const part1 = income * ipBoxCoeff * 0.099;
-    const baseAmount = income * (1 - ipBoxCoeff) - F17;
-    const part2 =
-      baseAmount > 1000000
-        ? (baseAmount - 1000000) * 0.279 + 0.239 * 1000000
-        : baseAmount * 0.239;
-    return part1 + part2;
+    if (income - F17 > 93495.6) {
+      const ipBoxPart = income * ipBoxCoeff * 0.099;
+      const standardIncome = income * (1 - ipBoxCoeff) - F17;
+
+      const standardPart =
+        standardIncome > 1000000
+          ? (standardIncome - 1000000) * 0.279 + 0.239 * 1000000
+          : standardIncome * 0.239;
+
+      return ipBoxPart + standardPart;
+    } else if (income > 0) {
+      const ipBoxPart = income * ipBoxCoeff * 0.05;
+      const standardPart = Math.max(income * (1 - ipBoxCoeff) - F17, 0) * 0.19;
+      return ipBoxPart + standardPart + 4581.36;
+    } else {
+      return 4581.36;
+    }
   }
 
   // Main calculation and DOM manipulation
