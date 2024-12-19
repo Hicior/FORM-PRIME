@@ -1139,7 +1139,7 @@ function displayPurchaseButtons() {
   const messageContainer = document.createElement("div");
   messageContainer.classList.add("submission-message");
   messageContainer.innerHTML = `
-    <h2>Dziękujemy za wypełnienie ankiety!</h2>
+    <h2>Dziękujemy za wypełnienie formularza!</h2>
     <p>Zostałeś dodany do listy rezerwowej. Skontaktujemy się z Tobą, gdy tylko będziemy mogli przyjąć nowych klientów.</p>
   `;
   formContainer.appendChild(messageContainer);
