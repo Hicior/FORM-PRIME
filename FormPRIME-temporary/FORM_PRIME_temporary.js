@@ -175,9 +175,6 @@ function initializeAccountingTypeCard() {
     }
   }
 
-  // Update the description based on the selection
-  updateMentzenBezVatDescription();
-
   // Attach change event listeners to accounting options
   accountingOptions.forEach((option) => {
     option.addEventListener("change", function () {
@@ -191,7 +188,6 @@ function initializeAccountingTypeCard() {
         businessTypeSelect.removeAttribute("required");
         businessTypeSelect.value = ""; // Reset selection when hidden
       }
-      updateMentzenBezVatDescription();
     });
   });
 
@@ -231,8 +227,6 @@ function initializeDocumentsPKCard() {
         );
         userSelections.selectedInnaOption = false;
       }
-
-      updateDescriptionPK(this.value);
     });
     pkListenerAttached = true; // Set flag to true to avoid re-attaching
   }
@@ -266,8 +260,6 @@ function initializeDocumentsKPIRCard() {
         );
         userSelections.selectedInnaOption = false;
       }
-
-      updateDescriptionKPIR(this.value);
     });
     kpListenerAttached = true; // Set flag to true to avoid re-attaching
   }
@@ -294,8 +286,6 @@ function initializeDocumentsSACard() {
         );
         userSelections.selectedInnaOption = false;
       }
-
-      updateDescriptionSA(this.value);
     });
   }
 }
@@ -308,94 +298,6 @@ function attachHRPackageListeners() {
       userSelections.hrPackage = getHRPackage();
     });
   });
-}
-
-// Function to update the description for "Mentzen bez VAT" package
-function updateMentzenBezVatDescription() {
-  const descriptionDiv = document.getElementById("description_MentzenBezVat");
-  if (
-    userSelections.accountingTypeSelection ===
-    "Ryczałt od przychodów ewidencjonowanych bez VAT"
-  ) {
-    // If the selected accounting type is "Ryczałt bez VAT", display the description
-    displayMentzenBezVatDescription();
-    userSelections.accountingPackage = {
-      name: "Mentzen bez VAT",
-      subscriptionId: 295,
-    };
-    userSelections.selectedInnaOption = false;
-  } else {
-    // Otherwise, clear the description and reset the accounting package
-    if (descriptionDiv) {
-      descriptionDiv.innerHTML = "";
-    }
-    userSelections.accountingPackage = null;
-  }
-}
-
-// Function to display the detailed description of "Mentzen bez VAT" package
-function displayMentzenBezVatDescription() {
-  const descriptionDiv = document.getElementById("description_MentzenBezVat");
-  if (descriptionDiv) {
-    descriptionDiv.innerHTML = `
-      <h3>Mentzen bez VAT</h3>
-      <ul>
-        <li>prowadzenie księgowości dla Ryczałtu bez VAT,</li>
-        <li>automatyczne płatności,</li>
-        <li>dostęp do platformy umożliwiającej przekazywanie dokumentów,</li>
-        <li>dostęp do danych raportowych takich jak podatki, wynagrodzenia, ewidencja VAT,</li>
-        <li>powiadomienia SMS o zbliżających się terminach płatności podatków itp.,</li>
-        <li>dostęp do szablonów umów,</li>
-        <li>wsparcie w kontrolach podatkowych,</li>
-        <li>newsletter podatkowy,</li>
-        <li>dostęp do webinarów.</li>
-      </ul>
-      <div class="Description-Recurring-Interval">
-        <p>Pakiet miesięczny</p>
-      </div>
-      <div class="Description-Price-Container">
-        <p>270 zł netto</p>
-      </div>
-    `;
-  }
-}
-
-// Function to update the description for the selected SA package
-function updateDescriptionSA(selectedValue) {
-  let descriptionText = "";
-  const descriptionSA = document.getElementById("description_SA");
-  if (selectedValue && saPackages[selectedValue] && selectedValue !== "Inna") {
-    const packageInfo = saPackages[selectedValue];
-    const numberOfDocuments = packageInfo.numberOfDocuments;
-    const packagePrice = packageInfo.price;
-
-    descriptionText = `
-      <h3>Potężny Mentzen ${numberOfDocuments}</h3>
-      <ul>
-        <li>prowadzenie księgowości Spółki akcyjnej lub Prostej spółki akcyjnej,</li>
-        <li>pakiet dotyczy max. ${numberOfDocuments} faktur miesięcznie,</li>
-        <li>nielimitowane konsultacje podatkowe,</li>
-        <li>automatyczne płatności,</li>
-        <li>dostęp do platformy umożliwiającej przekazywanie dokumentów,</li>
-        <li>dostęp do danych raportowych takich jak podatki, wynagrodzenia, ewidencja VAT,</li>
-        <li>powiadomienia SMS o zbliżających się terminach płatności podatków itp.,</li>
-        <li>dostęp do szablonów umów,</li>
-        <li>wsparcie w kontrolach podatkowych,</li>
-        <li>newsletter podatkowy,</li>
-        <li>dostęp do webinarów.</li>
-      </ul>
-      <div class="Description-Recurring-Interval">
-        <p>Pakiet miesięczny</p>
-      </div>
-      <div class="Description-Price-Container">
-        <p>${packagePrice}</p>
-      </div>
-    `;
-  }
-
-  if (descriptionSA) {
-    descriptionSA.innerHTML = descriptionText;
-  }
 }
 
 // Function to navigate to the next or previous card
@@ -792,85 +694,6 @@ const saPackages = {
   },
 };
 
-// Function to update the description for the selected PK package
-function updateDescriptionPK(selectedValue) {
-  let descriptionText = "";
-  const descriptionPK = document.getElementById("description_PK");
-  if (selectedValue && pkPackages[selectedValue] && selectedValue !== "Inna") {
-    const packageInfo = pkPackages[selectedValue];
-    const numberOfDocuments = packageInfo.numberOfDocuments;
-    const packagePrice = packageInfo.price;
-
-    // Construct the description text using template literals
-    descriptionText = `
-      <h3>Szeroki Mentzen ${numberOfDocuments}</h3>
-      <ul>
-        <li>prowadzenie księgowości w formie Ksiąg Rachunkowych,</li>
-        <li>pakiet dotyczy max. ${numberOfDocuments} dokumentów miesięcznie,</li>
-        <li>nielimitowane konsultacje podatkowe,</li>
-        <li>automatyczne płatności,</li>
-        <li>dostęp do platformy umożliwiającej przekazywanie dokumentów,</li>
-        <li>dostęp do danych raportowych takich jak podatki, wynagrodzenia, ewidencja VAT,</li>
-        <li>powiadomienia SMS o zbliżających się terminach płatności podatków itp.,</li>
-        <li>dostęp do szablonów umów,</li>
-        <li>wsparcie w kontrolach podatkowych,</li>
-        <li>newsletter podatkowy,</li>
-        <li>dostęp do webinarów.</li>
-      </ul>
-      <div class="Description-Recurring-Interval">
-        <p>Pakiet miesięczny</p>
-      </div>
-      <div class="Description-Price-Container">
-        <p>${packagePrice}</p>
-      </div>
-    `;
-  }
-
-  if (descriptionPK) {
-    // Update the HTML content with the description
-    descriptionPK.innerHTML = descriptionText;
-  }
-}
-
-// Function to update the description for the selected KPIR package
-function updateDescriptionKPIR(selectedValue) {
-  let descriptionText = "";
-  const descriptionKPIR = document.getElementById("description_KPIR");
-  if (selectedValue && kpPackages[selectedValue] && selectedValue !== "Inna") {
-    const packageInfo = kpPackages[selectedValue];
-    const numberOfDocuments = packageInfo.numberOfDocuments;
-    const packagePrice = packageInfo.price;
-
-    // Construct the description text using template literals
-    descriptionText = `
-      <h3>Uproszczony Mentzen ${numberOfDocuments}</h3>
-      <ul>
-        <li>prowadzenie księgowości w formie Księgi Przychodów i Rozchodów lub dla Ryczałtu z VATem,</li>
-        <li>pakiet dotyczy max. ${numberOfDocuments} dokumentów miesięcznie,</li>
-        <li>nielimitowane konsultacje podatkowe,</li>
-        <li>dostęp do platformy umożliwiającej przekazywanie dokumentów,</li>
-        <li>dostęp do danych raportowych takich jak podatki, wynagrodzenia, ewidencja VAT,</li>
-        <li>powiadomienia SMS o zbliżających się terminach płatności podatków itp.,</li>
-        <li>dostęp do szablonów umów,</li>
-        <li>wsparcie w kontrolach podatkowych,</li>
-        <li>newsletter podatkowy,</li>
-        <li>dostęp do webinarów.</li>
-      </ul>
-      <div class="Description-Recurring-Interval">
-        <p>Pakiet miesięczny</p>
-      </div>
-      <div class="Description-Price-Container">
-        <p>${packagePrice}</p>
-      </div>
-    `;
-  }
-
-  if (descriptionKPIR) {
-    // Update the HTML content with the description
-    descriptionKPIR.innerHTML = descriptionText;
-  }
-}
-
 // Function to get the accounting package based on type and selected value
 function getAccountingPackage(type, selectedValue) {
   if (type === "pk" && pkPackages[selectedValue] && selectedValue !== "Inna") {
@@ -904,109 +727,23 @@ function getAccountingPackage(type, selectedValue) {
   }
 }
 
-// Function to display available HR packages based on user inputs
 function displayPackages() {
-  // Get the number of employees and civil contracts from the inputs
+  // Keep existing calculations
   const employeeCount =
     parseInt(document.getElementById("employeeCount")?.value) || 0;
   const civilContractCount =
     parseInt(document.getElementById("civilContractCount")?.value) || 0;
 
-  // Calculate totals for different package variants
   const variant1Total = employeeCount * 2 + civilContractCount;
   const variant2Total = employeeCount + civilContractCount;
 
   const packagesContainer = document.getElementById("packagesContainer");
 
-  // Get packages based on the calculated totals
   const package1 = getPackageForTotal(variant1Total);
   const package2 = getPackageForTotal(variant2Total);
 
-  const packagesToDisplay = [];
-  availablePackageTypes = [];
-  availablePackagesByType = {};
-
-  // Logic to determine which packages to display based on user input
-  if (!package1 && !package2) {
-    packagesContainer.innerHTML =
-      '<p style="margin-bottom: 20px;">W celu uzyskania indywidualnej wyceny prosimy o kontakt z działem administracji: <a href="mailto:ksiegowosc@mentzen.pl">ksiegowosc@mentzen.pl</a></p>';
-    return;
-  }
-
-  if (!package1 && package2 && variant1Total > 50 && variant2Total <= 50) {
-    packagesToDisplay.push({
-      package: package2,
-      labels: ["Pakiet płacowy"],
-    });
-
-    availablePackageTypes.push("Płace");
-    availablePackagesByType["Płace"] = package2;
-
-    packagesToDisplay.push({
-      package: null,
-      labels: ["Pakiet kadrowo-płacowy"],
-      message:
-        'W celu uzyskania indywidualnej wyceny dla pakietu kadrowo-płacowego, prosimy o kontakt z działem administracji: <a href="mailto:ksiegowosc@mentzen.pl">ksiegowosc@mentzen.pl</a>',
-    });
-  } else {
-    if (package1 && package2 && package1.name === package2.name) {
-      packagesToDisplay.push({
-        package: package1,
-        labels: ["Pakiet kadrowo-płacowy", "Pakiet płacowy"],
-      });
-      availablePackageTypes.push("Kadry i płace");
-      availablePackageTypes.push("Płace");
-      availablePackagesByType["Kadry i płace"] = package1;
-      availablePackagesByType["Płace"] = package1;
-    } else {
-      if (package1) {
-        packagesToDisplay.push({
-          package: package1,
-          labels: ["Pakiet kadrowo-płacowy"],
-        });
-        availablePackageTypes.push("Kadry i płace");
-        availablePackagesByType["Kadry i płace"] = package1;
-      }
-      if (package2) {
-        packagesToDisplay.push({
-          package: package2,
-          labels: ["Pakiet płacowy"],
-        });
-        availablePackageTypes.push("Płace");
-        availablePackagesByType["Płace"] = package2;
-      }
-    }
-  }
-
-  // Generate HTML content for the packages to display
-  let packagesHTML = "";
-
-  packagesHTML += '<div class="packages-row">';
-
-  packagesToDisplay.forEach((item) => {
-    const labelsText = item.labels.join(", ");
-    if (item.package) {
-      packagesHTML += `
-        <div class="package-name">
-          <h4>${item.package.name}</h4>
-          <p><strong>${labelsText}</strong></p>
-          <p><strong>Cena netto:</strong> ${item.package.price} zł miesięcznie</p>
-        </div>
-      `;
-    } else {
-      packagesHTML += `
-        <div class="package-name">
-          <h4>${item.labels[0]}</h4>
-          <p>${item.message}</p>
-        </div>
-      `;
-    }
-  });
-
-  packagesHTML += "</div>";
-
-  // Add a common description for the packages
-  packagesHTML += `
+  // Modified HTML generation - only common description
+  let packagesHTML = `
     <div class="common-description">
       <p><strong>Pakiet płacowy obejmuje</strong> przede wszystkim comiesięczne naliczanie wynagrodzeń, przygotowywanie list wynagrodzeń, rozliczanie się z ZUS-em i Urzędem Skarbowym.</p>
       <p><strong>Pakiet kadrowo-płacowy dodatkowo obejmuje</strong> m.in. ewidencjonowanie urlopów, kontrolowanie ważności badań lekarskich i szkoleń BHP, przygotowywanie dokumentów pracowniczych niezbędnych do rozpoczęcia stosunku pracy jak i zakończenia (np. umowa o pracę, świadectwo pracy) oraz prowadzenie akt osobowych (opcjonalnie).</p>
@@ -1015,10 +752,8 @@ function displayPackages() {
 
   packagesContainer.innerHTML = packagesHTML;
 
-  // Attach event listeners to the HR package options
+  // Keep existing function calls
   attachHRPackageListeners();
-
-  // Update the user selections with the HR package
   userSelections.hrPackage = getHRPackage();
 }
 

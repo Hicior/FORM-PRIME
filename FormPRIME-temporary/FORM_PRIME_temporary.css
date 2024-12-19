@@ -443,6 +443,10 @@ body {
   background-color: #f59d24;
 }
 
+.Mentzen-prime-survey-wrapper .Information-NumberOfDocuments {
+  margin-top: 30px;
+}
+
 /* Responsive Styles */
 @media (max-width: 600px) {
   .Mentzen-prime-survey-wrapper {
